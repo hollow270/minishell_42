@@ -1,18 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   environment.h                                      :+:      :+:    :+:   */
+/*   strutils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 16:45:45 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/11 14:37:21 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/09 17:38:43 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/11 15:54:30 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENVIRONMENT_H
-# define ENVIRONMENT_H
+#include "../inc/minishell.h"
 
-t_env	*get_env(char **env);
+int	ft_strlen(const char *s)
+{
+	int	i;
 
-#endif
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*d_s;
+	char	*d;
+
+	d_s = (char *)malloc(ft_strlen(s) + 1);
+	if (!d_s)
+		return (NULL);
+	d = d_s;
+	while (*s)
+	{
+		*d_s = *s;
+		d_s++;
+		s++;
+	}
+	*d_s = '\0';
+	return (d);
+}

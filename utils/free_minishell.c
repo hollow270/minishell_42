@@ -1,41 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strutils.c                                         :+:      :+:    :+:   */
+/*   free_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 17:38:43 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/09 17:42:15 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/11 14:12:57 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/11 14:26:07 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	ft_strlen(char *s)
-{
-	int	i;
+static void	free_env(t_env **env);
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+void	free_minishell(t_minishell **s_minishell)
+{
+	free((*s_minishell)->prompt);
+	free((*s_minishell)->cmdline);			// do later
+	free_env((*s_minishell)->env);
+	free((*s_minishell)->cwd);				// do later
 }
 
-char	*ft_strdup(char *s)
+static void	free_env(t_env **env)
 {
-	int		i;
-	int		sz;
-	char	*ret;
+	t_env	*node;
+	t_env	*cup;
 
-	i = 0;
-	sz = ft_strlen(s);
-	ret = malloc((sz + 1) * sizeof(char));
-	while (s[i])
+	node = *env;
+	while(node)
 	{
-		ret[i] = s[i];
-		i++;
+		cup = node->next;
+		free(node->name);
+		free(node->value);
+		free(node);
+		node = cup;
 	}
-	s[i] = '\0';
-	return (ret);
 }

@@ -1,8 +1,8 @@
-CC = gcc -Wall -Wextra -Werror
+CC = gcc -g -Wall -Wextra -Werror
 RD = -lreadline
 
 HED = inc/
-SRC = src/ft_parse.c src/main.c
+SRC = src/main.c src/initialization/get_env.c utils/strutils.c utils/free_minishell.c
 OBJ = $(SRC:.c=.o)
 
 NAME = minishell
