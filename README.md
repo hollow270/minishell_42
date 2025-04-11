@@ -1,2 +1,2 @@
-# minishell_42
-THE minishell
+# minishell
+minishell 42-school project
