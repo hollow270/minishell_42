@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/11 14:12:22 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/11 18:54:42 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct	s_minishell
 {
 	char	*prompt;
 	char	*cmdline;
-	t_env	**env;
+	t_env	*env;
 	char	*cwd;
 }				t_minishell;
 
