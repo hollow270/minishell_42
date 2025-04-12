@@ -6,16 +6,17 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/11 18:58:00 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/12 20:38:39 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-static t_status	init_minishell(t_minishell **s_minishell, char **env);
+static t_minishell	*init_minishell(char **env, t_status *e_status);
+static t_status	minishell(t_minishell **s_minishell);
 static void	print_env(t_env *env);
 
-/*			---------		HEAD		--------			*/
+/*			---------		MAIN		--------			*/
 
 int main(int arc, char **argv, char **env)
 {
@@ -24,32 +25,53 @@ int main(int arc, char **argv, char **env)
 
 	(void)arc;
 	(void)argv;
-	e_status = init_minishell(&s_minishell, env);
-	if (e_status)
+	s_minishell = init_minishell(env, &e_status);
+	if (!s_minishell)
+		return (e_status);
+	while (true)
 	{
-		free_minishell(s_minishell);
-		exit(EXIT_FAILURE);
+		e_status = minishell(&s_minishell);
+		if (e_status == STATUS_EXIT_CMD)
+			break ;
 	}
-	t_env	*temp = s_minishell->env;
-	print_env(temp);
 	return (free_minishell(s_minishell), STATUS_SUCCESS);
 }
 
-static t_status	init_minishell(t_minishell **s_minishell, char **env)
+static t_minishell	*init_minishell(char **env, t_status *e_status)
 {
-	//char	*buff;
-	t_env	*ret_env;
+	t_minishell	*s_minishell;
 
-	*s_minishell = malloc(sizeof(s_minishell));
-	if (!*s_minishell)
-		return (STATUS_MALLOC_FAIL);
-	(*s_minishell)->prompt = ft_strdup("kaka");
-	ret_env = get_env(env);
-	(*s_minishell)->env = ret_env;
-	if (!(*s_minishell)->env)
-		return (STATUS_MALLOC_FAIL);
-	//print_env(ret_env);
-	//(*s_minishell)->cwd = getcwd(buff, 10);				// change later
+	s_minishell = (t_minishell *)malloc(sizeof(t_minishell));
+	if (!s_minishell)
+		return (*e_status = STATUS_MALLOC_FAIL, NULL);
+	s_minishell->s_env = get_env(env);
+	if (!s_minishell->s_env)
+		return (*e_status = STATUS_MALLOC_FAIL, NULL);
+	s_minishell->cwd = get_env_value(s_minishell->s_env, "PWD");
+	if (!s_minishell->cwd)
+		return (*e_status = STATUS_MALLOC_FAIL, free_env(s_minishell->s_env), NULL);
+	s_minishell->stdfd[0] = dup(STDIN_FILENO);
+	s_minishell->stdfd[1] = dup(STDOUT_FILENO);
+	return (s_minishell);
+}
+
+static t_status	minishell(t_minishell **s_minishell)
+{
+	t_minishell	*s_ms;
+
+	s_ms = *s_minishell;
+	s_ms->cmdline = readline(PROMPT);
+	if (!s_ms->cmdline)
+		return (STATUS_FAILURE);
+	if (ft_strcmp(s_ms->cmdline, "exit") == 0)
+	{
+		rl_clear_history();
+		free(s_ms->cmdline);
+		return (STATUS_EXIT_CMD);
+	}
+	add_history(s_ms->cmdline);
+	printf("%s\n", s_ms->cmdline);
+	free(s_ms->cmdline);
 	return (STATUS_SUCCESS);
 }
 

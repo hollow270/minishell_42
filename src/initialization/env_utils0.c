@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
+/*   env_utils0.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 16:57:19 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/12 17:26:21 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/12 15:07:45 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/12 15:12:55 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_H
-# define UTILS_H
+#include "../../inc/minishell.h"
 
-int		ft_strlen(const char *s);
-char	*ft_strdup(char *s);
-char	*ft_strndup(const char *s, int n);
-void	free_minishell(t_minishell *s_minishell);
-void	free_env(t_env *env);
-int		ft_strcmp(const char *s1, const char *s2);
+char	*get_env_value(t_env *s_env, char *name)
+{
+	t_env	*node;
 
-#endif
+	node = s_env;
+	while (node)
+	{
+		if (ft_strcmp(node->name, name) == 0)
+			return (ft_strdup(node->value));
+		node = node->next;
+	}
+}

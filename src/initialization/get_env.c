@@ -6,14 +6,14 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:36:53 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/11 18:44:41 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/12 17:21:12 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static char	*get_env_name(char *s);
-static char	*get_env_value(char *s);
+static char	*get_name(char *s);
+static char	*get_value(char *s);
 
 t_env	*get_env(char **env)
 {
@@ -22,18 +22,20 @@ t_env	*get_env(char **env)
 	t_env	*node;
 
 	i = 0;
-	ret = malloc(sizeof(t_env));
+	ret = (t_env *)malloc(sizeof(t_env));
 	if (!ret)
 		return (NULL);
 	node = ret;
 	while (env[i])
 	{
-		node->name = get_env_name(env[i]); // check if null
-		node->value = get_env_value(env[i]);
+		node->name = get_name(env[i]);
+		node->value = get_value(env[i]);
+		if (!node->name || !node->value)
+			return (NULL);
 		if (env[i + 1])
 		{
-			node->next = malloc(sizeof(t_env));
-			if (!(node->next))
+			node->next = (t_env *)malloc(sizeof(t_env));
+			if (!node->next)
 				return (NULL);
 			node = node->next;
 		}
@@ -44,7 +46,7 @@ t_env	*get_env(char **env)
 	return (ret);
 }
 
-static char	*get_env_name(char *s)
+static char	*get_name(char *s)
 {
 	int		i;
 	char	*ret;
@@ -58,7 +60,7 @@ static char	*get_env_name(char *s)
 	return (ret);
 }
 
-static char	*get_env_value(char *s)
+static char	*get_value(char *s)
 {
 	int		i;
 	char	*ret;
