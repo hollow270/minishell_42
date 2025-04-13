@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/13 15:00:38 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/13 16:33:26 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static t_minishell	*init_minishell(char **env, t_status *e_status);
 static t_status	minishell(t_minishell **s_minishell);
 static void	print_env(t_env *env);
 static void	print_tokens(t_token *s_tokens);
+static char	*print_value(int v);
 
 /*			---------		MAIN		--------			*/
 
@@ -102,9 +103,33 @@ static void	print_tokens(t_token *s_tokens)
 	printf("/*			******			*/\n");
 	while(result)
 	{
-		printf("value = [%s]\n  type = %d\n", result->value, result->type);
+		printf("value = [%s]\n  type = %s\n", result->value, print_value(result->type));
 		printf("---------------------------\n");
 		result = result->next;
 	}
 	printf("/*			******			*/\n");
+}
+
+static char	*print_value(int v)
+{
+	char	*word = "word";
+	char	*pipe = "pipe";
+	char	*red_i = "red_in";
+	char	*red_o = "red_out";
+	char	*hdoc = "hdoc";
+	char	*append = "append";
+
+	if (v == 0)
+		return (word);
+	if (v == 1)
+		return (pipe);
+	if (v == 2)
+		return (red_i);
+	if (v == 3)
+		return (red_o);
+	if (v == 4)
+		return (hdoc);
+	if (v == 5)
+		return (append);
+	return ("NULL");
 }
