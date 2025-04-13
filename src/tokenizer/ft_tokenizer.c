@@ -3,36 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokenizer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:29:49 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/12 20:26:01 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/04/13 14:36:57 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
-
-char	*ft_strdup(const char	*s1)
-{
-	char	*s;
-	size_t	i;
-	size_t	n;
-
-	i = 0;
-	n = 0;
-	while (s1[i] != '\0')
-		i++;
-	s = malloc(i + 1);
-	if (s == NULL)
-		return (NULL);
-	while (n < i)
-	{
-		s[n] = s1[n];
-		n++;
-	}
-	s[n] = '\0';
-	return (s);
-}
 
 int	ft_isspace(char c)
 {
@@ -198,7 +176,7 @@ t_token	*ft_tokenizer(char *line)
 	}
 	return (head);
 }
-int main(int ac, char **v)
+/*int main(int ac, char **v)
 {
 	if (!v[1] || ac == 1)
 		return (1);
@@ -218,4 +196,4 @@ int main(int ac, char **v)
 		result = result->next;
 	}
 	ft_free_tokens(head);
-}
+}*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:43:21 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/11 16:44:01 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/04/13 14:56:46 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,8 @@ typedef struct	s_token
 	t_tokens_type	type;
 	struct s_token	*next;
 }		t_token;
+
+t_token	*ft_tokenizer(char *line);
+void	ft_free_tokens(t_token *head);
 
 #endif

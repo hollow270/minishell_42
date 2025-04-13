@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/12 20:38:39 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/13 15:00:38 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static t_minishell	*init_minishell(char **env, t_status *e_status);
 static t_status	minishell(t_minishell **s_minishell);
 static void	print_env(t_env *env);
+static void	print_tokens(t_token *s_tokens);
 
 /*			---------		MAIN		--------			*/
 
@@ -58,6 +59,7 @@ static t_minishell	*init_minishell(char **env, t_status *e_status)
 static t_status	minishell(t_minishell **s_minishell)
 {
 	t_minishell	*s_ms;
+	t_token		*s_tokens;
 
 	s_ms = *s_minishell;
 	s_ms->cmdline = readline(PROMPT);
@@ -70,10 +72,15 @@ static t_status	minishell(t_minishell **s_minishell)
 		return (STATUS_EXIT_CMD);
 	}
 	add_history(s_ms->cmdline);
-	printf("%s\n", s_ms->cmdline);
+	s_tokens = ft_tokenizer(s_ms->cmdline);
+	print_tokens(s_tokens);
 	free(s_ms->cmdline);
+	ft_free_tokens(s_tokens);
 	return (STATUS_SUCCESS);
 }
+
+
+/*			--------		TESTING FUNCTIONS		--------			*/
 
 static void	print_env(t_env *env)
 {
@@ -85,4 +92,19 @@ static void	print_env(t_env *env)
 		printf("%s=%s\n", node->name, node->value);
 		node = node->next;
 	}
+}
+
+static void	print_tokens(t_token *s_tokens)
+{
+	t_token	*result;
+
+	result = s_tokens;
+	printf("/*			******			*/\n");
+	while(result)
+	{
+		printf("value = [%s]\n  type = %d\n", result->value, result->type);
+		printf("---------------------------\n");
+		result = result->next;
+	}
+	printf("/*			******			*/\n");
 }
