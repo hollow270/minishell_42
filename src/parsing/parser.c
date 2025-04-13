@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer.h                                        :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 16:43:21 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/13 19:40:43 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/13 18:16:34 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/13 19:31:35 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TOKENIZER_H
-# define TOKENIZER_H
+#include "../../inc/minishell.h"
 
-# include "structs.h"
-
-t_token	*ft_tokenizer(char *line);
-void	ft_free_tokens(t_token *head);
-
-#endif
+t_parse	*parse(t_token *s_tokens)
+{
+	t_parse	*s_parse;
+	return (s_parse);
+}

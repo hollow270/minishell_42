@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/13 16:33:26 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/13 19:30:25 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static t_minishell	*init_minishell(char **env, t_status *e_status)
 static t_status	minishell(t_minishell **s_minishell)
 {
 	t_minishell	*s_ms;
-	t_token		*s_tokens;
 
 	s_ms = *s_minishell;
 	s_ms->cmdline = readline(PROMPT);
@@ -73,10 +72,12 @@ static t_status	minishell(t_minishell **s_minishell)
 		return (STATUS_EXIT_CMD);
 	}
 	add_history(s_ms->cmdline);
-	s_tokens = ft_tokenizer(s_ms->cmdline);
-	print_tokens(s_tokens);
+	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
+	s_ms->s_parse = parse(s_ms->s_tokens);
+	/*printf_parsed_data(s_ms->s_parse);*/
+	//print_tokens(s_ms->s_tokens);
 	free(s_ms->cmdline);
-	ft_free_tokens(s_tokens);
+	ft_free_tokens(s_ms->s_tokens);
 	return (STATUS_SUCCESS);
 }
 
