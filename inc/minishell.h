@@ -25,5 +25,6 @@
 # include "structs.h"
 # include "environment.h"
 # include "utils.h"
+# include "tokenizer.h"
 
 #endif
