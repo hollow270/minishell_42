@@ -1,30 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   environment.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/08 17:16:39 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/12 15:20:21 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/10 16:45:45 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/12 15:12:50 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_h
+#ifndef ENVIRONMENT_H
+# define ENVIRONMENT_H
 
-# include <unistd.h>
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <curses.h>
-# include <term.h>
-# include <unistd.h>
-# include <stdlib.h>
-
-# include "structs.h"
-# include "environment.h"
-# include "utils.h"
-# include "tokenizer.h"
+t_env	*get_env(char **env);
+char	*get_env_value(t_env *s_env, char *name);
 
 #endif
