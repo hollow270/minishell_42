@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/13 19:25:48 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/14 17:51:44 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 typedef struct	s_env			t_env;
 typedef struct	s_token			t_token;
-typedef struct	s_parse			t_parse;
+typedef struct	s_cmd			t_cmd;
 typedef struct	s_redirect		t_redirect;
 
 typedef struct	s_minishell
@@ -24,7 +24,7 @@ typedef struct	s_minishell
 	t_env	*s_env;
 	char	*cwd;
 	t_token	*s_tokens;
-	t_parse	*s_parse;
+	t_cmd	**s_cmd;
 	int		stdfd[2];
 }			t_minishell;
 
@@ -46,10 +46,13 @@ typedef enum	e_status
 typedef enum	e_tokens_type
 {
 	TOKEN_WORD,		/*CMD OR ARG*/ 
+	TOKEN_CMD,
+	TOKEN_STR,
 	TOKEN_PIPE,		/* | */
 	TOKEN_RED_IN,	/* < */
 	TOKEN_RED_OUT,	/* > */
 	TOKEN_HDOC,		/* << */
+	TOKEN_EOF,
 	TOKEN_APPEND,	/* >> */
 }		t_tokens_type;
 
@@ -60,28 +63,12 @@ typedef struct	s_token
 	struct s_token	*next;
 }		t_token;
 
-typedef struct	s_parse
+typedef struct	s_cmd
 {
 	char			**argv;
-	t_redirect		*redirect;
+	t_tokens_type	type;
 	int				is_builtin;
-	struct s_parse	*next;
-}					t_parse;
-
-
-typedef enum	e_redirect_type
-{
-	RED_IN,
-	RED_OUT,
-	RED_HDOC,
-	RED_APPEND
-}				t_redirect_type;
-
-typedef struct	s_redirect
-{
-	t_redirect_type		type;
-	char				*file;
-	struct s_redirect	*next;
-}						t_redirect;
+	struct s_cmd	*next;
+}					t_cmd;
 
 #endif

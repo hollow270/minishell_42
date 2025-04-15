@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/13 19:30:25 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/14 19:55:52 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static t_status	minishell(t_minishell **s_minishell);
 static void	print_env(t_env *env);
 static void	print_tokens(t_token *s_tokens);
 static char	*print_value(int v);
+static void	print_cmds(t_cmd **s_cmd);
 
 /*			---------		MAIN		--------			*/
 
@@ -73,8 +74,8 @@ static t_status	minishell(t_minishell **s_minishell)
 	}
 	add_history(s_ms->cmdline);
 	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
-	s_ms->s_parse = parse(s_ms->s_tokens);
-	/*printf_parsed_data(s_ms->s_parse);*/
+	s_ms->s_cmd = parse(s_ms->s_tokens);
+	print_cmds(s_ms->s_cmd);
 	//print_tokens(s_ms->s_tokens);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
@@ -123,14 +124,38 @@ static char	*print_value(int v)
 	if (v == 0)
 		return (word);
 	if (v == 1)
-		return (pipe);
+		return ("command");
 	if (v == 2)
-		return (red_i);
+		return ("string");
 	if (v == 3)
-		return (red_o);
+		return (pipe);
 	if (v == 4)
-		return (hdoc);
+		return (red_i);
 	if (v == 5)
+		return (red_o);
+	if (v == 6)
+		return (hdoc);
+	if (v == 7)
+		return ("EOF");
+	if (v == 8)
 		return (append);
 	return ("NULL");
+}
+
+static void	print_cmds(t_cmd **s_cmd)
+{
+	int		i;
+	t_cmd	*node;
+
+	i = 0;
+	node = *s_cmd;
+	while (node)
+	{
+		printf("/*			*********************			/*\n");
+		while (node->argv[i])
+			printf("[%s] ", node->argv[i++]);
+		printf("\nis_builtin = %d\n", node->is_builtin);
+		printf("%s\n", print_value(node->type));
+		node = node->next;
+	}
 }
