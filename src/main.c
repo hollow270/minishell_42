@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/14 19:55:52 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/15 17:01:44 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static t_status	minishell(t_minishell **s_minishell);
 static void	print_env(t_env *env);
 static void	print_tokens(t_token *s_tokens);
 static char	*print_value(int v);
-static void	print_cmds(t_cmd **s_cmd);
+static void	print_cmds(t_cmd *s_cmd);
 
 /*			---------		MAIN		--------			*/
 
@@ -139,16 +139,29 @@ static char	*print_value(int v)
 		return ("EOF");
 	if (v == 8)
 		return (append);
+	if (v == 9)
+		return ("file");
 	return ("NULL");
 }
 
-static void	print_cmds(t_cmd **s_cmd)
+static void	print_cmds(t_cmd *head)
+{
+	while (head)
+	{
+		printf("Command type: %s\n", print_value(head->type));
+		for (int i = 0; head->argv && head->argv[i]; i++)
+			printf("  Arg[%d]: %s\n", i, head->argv[i]);
+		head = head->next;
+	}
+}
+
+/*static void	print_cmds(t_cmd *s_cmd)
 {
 	int		i;
 	t_cmd	*node;
 
 	i = 0;
-	node = *s_cmd;
+	node = s_cmd;
 	while (node)
 	{
 		printf("/*			*********************			/*\n");
@@ -158,4 +171,4 @@ static void	print_cmds(t_cmd **s_cmd)
 		printf("%s\n", print_value(node->type));
 		node = node->next;
 	}
-}
+}*/

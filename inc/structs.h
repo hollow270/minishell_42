@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/14 17:51:44 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/15 16:58:13 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct	s_minishell
 	t_env	*s_env;
 	char	*cwd;
 	t_token	*s_tokens;
-	t_cmd	**s_cmd;
+	t_cmd	*s_cmd;
 	int		stdfd[2];
 }			t_minishell;
 
@@ -54,6 +54,7 @@ typedef enum	e_tokens_type
 	TOKEN_HDOC,		/* << */
 	TOKEN_EOF,
 	TOKEN_APPEND,	/* >> */
+	TOKEN_FILE,
 }		t_tokens_type;
 
 typedef struct	s_token
