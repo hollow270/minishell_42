@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/15 16:58:13 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/16 16:11:24 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,12 @@ typedef struct	s_cmd
 	int				is_builtin;
 	struct s_cmd	*next;
 }					t_cmd;
+
+typedef struct	s_redirect
+{
+	int					type;
+	char				*file;
+	struct s_redirect	*next;
+}						t_redirect;
 
 #endif
