@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:39 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/12 15:20:21 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/13 19:42:12 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,11 @@
 # include <stdlib.h>
 
 # include "structs.h"
+# include "tokenizer.h"
+# include "parsing.h"
 # include "environment.h"
 # include "utils.h"
-# include "tokenizer.h"
+
+# define PROMPT	"minishell> "
 
 #endif

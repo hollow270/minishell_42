@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/12 20:38:39 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/15 17:01:44 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 static t_minishell	*init_minishell(char **env, t_status *e_status);
 static t_status	minishell(t_minishell **s_minishell);
 static void	print_env(t_env *env);
+static void	print_tokens(t_token *s_tokens);
+static char	*print_value(int v);
+static void	print_cmds(t_cmd *s_cmd);
 
 /*			---------		MAIN		--------			*/
 
@@ -70,10 +73,17 @@ static t_status	minishell(t_minishell **s_minishell)
 		return (STATUS_EXIT_CMD);
 	}
 	add_history(s_ms->cmdline);
-	printf("%s\n", s_ms->cmdline);
+	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
+	s_ms->s_cmd = parse(s_ms->s_tokens);
+	print_cmds(s_ms->s_cmd);
+	//print_tokens(s_ms->s_tokens);
 	free(s_ms->cmdline);
+	ft_free_tokens(s_ms->s_tokens);
 	return (STATUS_SUCCESS);
 }
+
+
+/*			--------		TESTING FUNCTIONS		--------			*/
 
 static void	print_env(t_env *env)
 {
@@ -86,3 +96,79 @@ static void	print_env(t_env *env)
 		node = node->next;
 	}
 }
+
+static void	print_tokens(t_token *s_tokens)
+{
+	t_token	*result;
+
+	result = s_tokens;
+	printf("/*			******			*/\n");
+	while(result)
+	{
+		printf("value = [%s]\n  type = %s\n", result->value, print_value(result->type));
+		printf("---------------------------\n");
+		result = result->next;
+	}
+	printf("/*			******			*/\n");
+}
+
+static char	*print_value(int v)
+{
+	char	*word = "word";
+	char	*pipe = "pipe";
+	char	*red_i = "red_in";
+	char	*red_o = "red_out";
+	char	*hdoc = "hdoc";
+	char	*append = "append";
+
+	if (v == 0)
+		return (word);
+	if (v == 1)
+		return ("command");
+	if (v == 2)
+		return ("string");
+	if (v == 3)
+		return (pipe);
+	if (v == 4)
+		return (red_i);
+	if (v == 5)
+		return (red_o);
+	if (v == 6)
+		return (hdoc);
+	if (v == 7)
+		return ("EOF");
+	if (v == 8)
+		return (append);
+	if (v == 9)
+		return ("file");
+	return ("NULL");
+}
+
+static void	print_cmds(t_cmd *head)
+{
+	while (head)
+	{
+		printf("Command type: %s\n", print_value(head->type));
+		for (int i = 0; head->argv && head->argv[i]; i++)
+			printf("  Arg[%d]: %s\n", i, head->argv[i]);
+		head = head->next;
+	}
+}
+
+/*static void	print_cmds(t_cmd *s_cmd)
+{
+	int		i;
+	t_cmd	*node;
+
+	i = 0;
+	node = s_cmd;
+	while (node)
+	{
+		printf("/*			*********************			/*\n");
+		while (node->argv[i])
+			printf("[%s] ", node->argv[i++]);
+		printf("\nis_builtin = %d\n", node->is_builtin);
+		printf("%s\n", print_value(node->type));
+		node = node->next;
+	}
+}*/
