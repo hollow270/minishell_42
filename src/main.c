@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/15 17:01:44 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/16 16:17:23 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,21 +154,3 @@ static void	print_cmds(t_cmd *head)
 		head = head->next;
 	}
 }
-
-/*static void	print_cmds(t_cmd *s_cmd)
-{
-	int		i;
-	t_cmd	*node;
-
-	i = 0;
-	node = s_cmd;
-	while (node)
-	{
-		printf("/*			*********************			/*\n");
-		while (node->argv[i])
-			printf("[%s] ", node->argv[i++]);
-		printf("\nis_builtin = %d\n", node->is_builtin);
-		printf("%s\n", print_value(node->type));
-		node = node->next;
-	}
-}*/

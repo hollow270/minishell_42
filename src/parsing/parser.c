@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 18:16:34 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/15 16:57:35 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/16 16:21:15 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,6 @@ t_cmd	*parse(t_token *s_tokens)
 	process_tokens(s_tokens);
 	s_cmd = parse_processed_tokens(s_tokens);
 	return (s_cmd);
-	/*t_cmd	*s_cmd;
-	t_token	*node;
-	t_token	*prv;
-
-	node = s_tokens;
-	prv = s_tokens;
-	while (node)
-	{
-		if (node->type == TOKEN_WORD)
-			cmdadd_back(s_cmd, node->value);
-	}
-	return (s_cmd);*/
 }
 
 static void		process_tokens(t_token *s_tokens)
@@ -64,7 +52,6 @@ static t_cmd	*parse_processed_tokens(t_token *s_tokens)
 	t_token	*prv;
 
 	s_cmd = NULL;
-	//s_cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	node = s_tokens;
 	prv = s_tokens;
 	while (node)
@@ -88,54 +75,22 @@ static	void	cmdadd_back(t_cmd **head, char **argv, t_tokens_type type)
 	    t_cmd *new;
     t_cmd *node;
 
-    // Allocate memory for the new command node
     new = malloc(sizeof(t_cmd));
     if (!new)
         return;
-
-    // Initialize the new node's fields
     new->argv = argv;
     new->type = type;
     new->is_builtin = identify_cmd(argv[0]);
     new->next = NULL;
-
-    // If the list is empty, set the new node as the head
     if (*head == NULL)
     {
         *head = new;
         return;
     }
-
-    // Otherwise, find the last node and append the new node
     node = *head;
     while (node->next)
         node = node->next;
     node->next = new;
-
-	/*t_cmd	*new;
-	t_cmd	*node;
-
-	new = malloc(sizeof(t_cmd));
-	if (!new)
-		return ;
-	node = *head;
-	if (!node)
-	{
-		//node = new;
-		*head = new;
-		new->argv = argv;
-		new->type = type;
-		new->is_builtin = identify_cmd(argv[0]);
-		node->next = NULL;
-		return ;
-	}
-	while (node->next)
-		node = node->next;
-	node->next = new;
-	new->argv = argv;
-	new->type = type;
-	new->is_builtin = identify_cmd(argv[0]);
-	new->next = NULL;*/
 }
 
 static char	**make_argv(t_token *cur, t_token *prv)
@@ -148,13 +103,10 @@ static char	**make_argv(t_token *cur, t_token *prv)
 	node = cur;
 	if (node->type == TOKEN_HDOC)
 		return (make_argv_helper("here_doc"));
-		//return (*argv = ft_strdup("here_doc"), argv);
 	if (node->type == TOKEN_WORD && prv->type == TOKEN_HDOC)
 		return (make_argv_helper(node->value));
-		//return (*argv = ft_strdup(node->value), argv);
 	if (node->type == TOKEN_FILE)
 		return (make_argv_helper(node->value));
-		//return (*argv = ft_strdup(node->value), argv);
 	cmd_sz = count_args(node);
 	i = 0;
 	argv = malloc((cmd_sz + 1) * sizeof(char *));
