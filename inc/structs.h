@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/16 16:36:31 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/18 17:49:58 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef enum	e_tokens_type
 	TOKEN_EOF,
 	TOKEN_APPEND,	/* >> */
 	TOKEN_FILE,
+	TOKEN_ARG
 }		t_tokens_type;
 
 typedef struct	s_token
@@ -75,7 +76,7 @@ typedef struct	s_cmd
 
 typedef struct	s_redirect
 {
-	int					type;
+	t_tokens_type		type;
 	char				*file;
 	struct s_redirect	*next;
 }						t_redirect;

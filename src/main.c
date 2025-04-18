@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/16 16:17:23 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/18 17:50:21 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,10 @@ static t_status	minishell(t_minishell **s_minishell)
 	}
 	add_history(s_ms->cmdline);
 	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
-	s_ms->s_cmd = parse(s_ms->s_tokens);
-	print_cmds(s_ms->s_cmd);
-	//print_tokens(s_ms->s_tokens);
+	parse_command_line(s_ms);
+	//s_ms->s_cmd = parse(s_ms->s_tokens);
+	//print_cmds(s_ms->s_cmd);
+	print_tokens(s_ms->s_tokens);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
 	return (STATUS_SUCCESS);
@@ -141,6 +142,8 @@ static char	*print_value(int v)
 		return (append);
 	if (v == 9)
 		return ("file");
+	if (v == 10)
+		return ("arg");
 	return ("NULL");
 }
 
@@ -148,9 +151,10 @@ static void	print_cmds(t_cmd *head)
 {
 	while (head)
 	{
-		printf("Command type: %s\n", print_value(head->type));
+		//printf("Command type: %s\n", print_value(head->type));
 		for (int i = 0; head->argv && head->argv[i]; i++)
 			printf("  Arg[%d]: %s\n", i, head->argv[i]);
+		printf("------------------------------\n");
 		head = head->next;
 	}
 }
