@@ -8,7 +8,7 @@ OBJ = $(SRC:.c=.o)
 
 NAME = minishell
 
-all: $(NAME)
+all: $(NAME) clean
 
 $(NAME): $(OBJ)
 	$(CC) -I$(HED) $(OBJ) -o $(NAME) $(RD)

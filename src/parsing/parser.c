@@ -6,13 +6,17 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/18 18:00:52 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/19 19:34:58 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static void			process_tokens(t_token *s_tokens);
+static void			expand_variables(t_token *s_tokens, t_env *s_env);
+static char			*expand(char *s, t_env *s_env);
+static char			*find_env_value(char *s, t_env *s_env);
+static int			has_var(char *s);
 t_cmd				*parse_tokens(t_token *s_tokens);
 static t_cmd		*create_cmd(void);
 static void			add_cmd(t_cmd **head, t_cmd *new);
@@ -27,6 +31,7 @@ t_status	parse_command_line(t_minishell *s_minishell)
 	if (!s_minishell || !s_minishell->s_tokens)
 		return (STATUS_FAILURE);
 	process_tokens(s_minishell->s_tokens);
+	expand_variables(s_minishell->s_tokens, s_minishell->s_env);
 	/*s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
 	if (!s_minishell->s_cmd)
 		return (STATUS_FAILURE);*/
@@ -35,6 +40,7 @@ t_status	parse_command_line(t_minishell *s_minishell)
 
 static void		process_tokens(t_token *s_tokens)
 {
+	char	c;
 	t_token	*node;
 	t_token	*prv;
 
@@ -42,19 +48,97 @@ static void		process_tokens(t_token *s_tokens)
 	prv = s_tokens;
 	while (node)
 	{
-		if (node->type == TOKEN_WORD && (prv->type == TOKEN_RED_IN || prv->type == TOKEN_RED_OUT))
+		c = *(node->value);
+		if (c == '$')
+			node->type = TOKEN_VAR;
+		else if (node->type == TOKEN_WORD && (prv->type == TOKEN_RED_IN || prv->type == TOKEN_RED_OUT))
 			node->type = TOKEN_FILE;
 		else if (node->type == TOKEN_WORD && prv->type == TOKEN_HDOC)
 			node->type = TOKEN_EOF;
 		else if (node->type == TOKEN_WORD && prv->type == TOKEN_APPEND)
 			node->type = TOKEN_FILE;
-		else if (node->type == TOKEN_WORD && (prv->type != TOKEN_WORD && prv->type != TOKEN_CMD && prv->type != TOKEN_ARG))
+		else if (node->type == TOKEN_WORD && (prv->type != TOKEN_WORD
+			&& prv->type != TOKEN_CMD && prv->type != TOKEN_ARG))
 			node->type = TOKEN_CMD;
 		else if (node->type == TOKEN_WORD && (prv->type == TOKEN_CMD || prv->type == TOKEN_ARG))
 			node->type = TOKEN_ARG;
 		prv = node;
 		node = node->next;
 	}
+}
+
+static void	expand_variables(t_token *s_tokens, t_env *s_env)
+{
+	t_token	*node;
+
+	node = s_tokens;
+	while (node)
+	{
+		if (has_var(node->value))
+		{
+			node->value = expand(node->value, s_env);
+		}
+		node = node->next;
+	}
+}
+
+static char	*expand(char *s, t_env *s_env)
+{
+	int		i;
+	int		j;
+	char	*old;
+	char	*value;
+	char	*new;
+
+	i = 0;
+	old = s;
+	value = find_env_value(s, s_env);
+	new = malloc(sizeof(char) * (ft_strlen(s) + ft_strlen(value) + 1));
+	if (!new)
+		return (NULL);
+	while (s[i] && s[i] != '$')
+	{
+		new[i] = s[i];
+		i++;
+	}
+	j = 0;
+	while (value[j])
+	{
+		new[i] = value[j];
+		i++;
+		j++;
+	}
+	new[i] = '\0';
+	free(old);
+	return (new);
+}
+
+static char	*find_env_value(char *s, t_env *s_env)
+{
+	t_env	*node;
+
+	node = s_env;
+	while (node)
+	{
+		if (ft_strcmp(s, node->name))
+			return (node->value);
+		node->next;
+	}
+	return (NULL);
+}
+
+static int	has_var(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '$')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 t_cmd	*parse_tokens(t_token *s_tokens)
@@ -69,6 +153,19 @@ t_cmd	*parse_tokens(t_token *s_tokens)
 	curr_cmd = s_cmd;
 	curr_token = s_tokens;
 	while (curr_token)
+	{
+		if (curr_token->type == TOKEN_PIPE)
+		{
+			add_cmd(&s_cmd, curr_cmd);
+			curr_cmd = create_cmd();
+		}
+		else if (curr_token->type == TOKEN_RED_IN || curr_token->type == TOKEN_RED_OUT
+			|| curr_token->type == TOKEN_HDOC || curr_token->type == TOKEN_APPEND)
+		{
+			if (curr_token->next->type == TOKEN_VAR)
+				return (s_cmd);
+		}
+	}
 	return (s_cmd);
 }
 
@@ -179,4 +276,5 @@ static char	*expand_env_var(t_env *s_env, char *var)
 			return (ft_strdup(node->value));
 		node = node->next;
 	}
+	return (ft_strdup(""));
 }

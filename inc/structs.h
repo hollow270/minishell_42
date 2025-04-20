@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/18 17:49:58 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:45:04 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ typedef enum	e_tokens_type
 	TOKEN_EOF,
 	TOKEN_APPEND,	/* >> */
 	TOKEN_FILE,
-	TOKEN_ARG
+	TOKEN_ARG,
+	TOKEN_VAR
 }		t_tokens_type;
 
 typedef struct	s_token

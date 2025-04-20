@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/18 17:50:21 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:45:23 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ static char	*print_value(int v)
 		return ("file");
 	if (v == 10)
 		return ("arg");
+	if (v == 11)
+		return ("var");
 	return ("NULL");
 }
 
