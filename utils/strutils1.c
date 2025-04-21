@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strutils.c                                         :+:      :+:    :+:   */
+/*   strutils1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:38:43 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/12 17:13:35 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/20 17:57:02 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	ft_strlen(const char *s)
 	int	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i])
 		i++;
 	return (i);
@@ -73,4 +75,22 @@ int	ft_strcmp(const char *s1, const char *s2)
 		i++;
 	}
 	return (s1[i] - s2[i]);
+}
+
+size_t	ft_strlcpy(char *dest, const char *src, size_t n)
+{
+	size_t	len;
+
+	len = ft_strlen(src);
+	if (n == 0)
+		return (len);
+	while (*src && n > 1)
+	{
+		*dest = *src;
+		dest++;
+		src++;
+		n--;
+	}
+	*dest = '\0';
+	return (len);
 }

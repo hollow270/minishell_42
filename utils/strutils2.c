@@ -1,22 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   environment.h                                      :+:      :+:    :+:   */
+/*   strutils2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 16:45:45 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 16:52:18 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/20 17:47:34 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/20 17:57:42 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENVIRONMENT_H
-# define ENVIRONMENT_H
+#include "../inc/minishell.h"
 
-# include "structs.h"
+char	*ft_strconcat(const char *s1, const char *s2)
+{
+	int		i;
+	int		j;
+	int		s1_sz;
+	int		s2_sz;
+	char	*ret;
 
-t_env	*get_env(char **env);
-char	*get_env_value(t_env *s_env, char *name);
-char	*get_env_value2(t_env *s_env, char *name);
-
-#endif
+	ret = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	i = 0;
+	if (s1)
+	{
+		while (s1[i])
+		{
+			ret[i] = s1[i];
+			i++;
+		}
+	}
+	j = 0;
+	while (s2[j])
+	{
+		ret[i] = s2[j];
+		i++;
+		j++;
+	}
+	ret[i] = '\0';
+	return (ret);
+}
