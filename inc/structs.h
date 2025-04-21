@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
 /*   Updated: 2025/04/18 18:45:04 by yhajbi           ###   ########.fr       */

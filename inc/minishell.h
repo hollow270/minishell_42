@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:39 by yhajbi            #+#    #+#             */
 /*   Updated: 2025/04/20 18:10:22 by yhajbi           ###   ########.fr       */
@@ -21,6 +21,10 @@
 # include <term.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
+# include <errno.h>
+# include <sys/types.h>
+# include <dirent.h>
 
 # include "structs.h"
 # include "tokenizer.h"
