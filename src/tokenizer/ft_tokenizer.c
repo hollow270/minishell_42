@@ -3,14 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokenizer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:29:49 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/13 14:36:57 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/21 20:24:15 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
+
+char	*ft_strdup(char *s)
+{
+	char	*d_s;
+	char	*d;
+
+	d_s = (char *)malloc(strlen(s) + 1);
+	if (!d_s)
+		return (NULL);
+	d = d_s;
+	while (*s)
+	{
+		*d_s = *s;
+		d_s++;
+		s++;
+	}
+	*d_s = '\0';
+	return (d);
+}
 
 int	ft_isspace(char c)
 {
@@ -76,45 +95,52 @@ void	check_space(char *line, int *i)
 	return ;
 }
 
-t_token	*handle_word(char *line, int *i)
+t_token *handle_word(char *line, int *i)
 {
-	char	*word;
-	int		j;
-	int		start;
-	char	quote;
+    char *word;
+    int j;
+    int start;
+    char quote;
 
-	check_space(line, i);
-	start = *i;
-	quote = 0;
-	while(line[*i])
-	{
-		if ((line[*i] == '\'' || line[*i] == '\"') && !quote)
-		{
-			quote = line[*i];
-			(*i) += 1;
-			while (line[*i] && line[*i] != quote)
-				(*i)++;
-			if (!line[*i])
-				return (NULL);
-			(*i)++;
-		}
-		else if (quote && (line[*i] == '<' || line[*i] == '>' || line[*i] == '|'
-			|| line[*i] == '\'' || line[*i] == '\"' || ft_isspace(line[*i])))
-			break ;
-		else if (!quote && (line[*i] == '<' || line[*i] == '>' || line[*i] == '|'
-			|| ft_isspace(line[*i])))
-			break ;
-		else 
-			(*i)++;
-	}
-	word = malloc((*i) - start + 1);
-	if (!word)
-		return (NULL);
-	j = 0;
-	while (start < (*i))
-		word[j++] = line[start++];
-	word[j] = '\0';
-	return (ft_create_token(word, TOKEN_WORD, 1));
+    check_space(line, i);
+    start = *i;
+    quote = 0;
+    while(line[*i])
+    {
+        if (!quote && (line[*i] == '<' || line[*i] == '>' || line[*i] == '|' || ft_isspace(line[*i])))
+            break; 
+        if ((line[*i] == '\'' || line[*i] == '\"'))
+        {
+            if (!quote)
+            {
+                quote = line[*i];
+                (*i)++;
+                while (line[*i] && line[*i] != quote)
+                    (*i)++;
+                if (!line[*i])
+                    return (NULL);
+                (*i)++;
+                quote = 0;
+            }
+            else if (line[*i] == quote)
+            {
+                (*i)++;
+                quote = 0;
+            }
+            else
+                (*i)++;
+        }
+        else
+            (*i)++;
+    }
+    word = malloc((*i) - start + 1);
+    if (!word)
+        return (NULL);
+    j = 0;
+    while (start < (*i))
+        word[j++] = line[start++];
+    word[j] = '\0';
+    return (ft_create_token(word, TOKEN_WORD, 1));
 }
 
 void	ft_free_tokens(t_token *head)
@@ -176,7 +202,7 @@ t_token	*ft_tokenizer(char *line)
 	}
 	return (head);
 }
-/*int main(int ac, char **v)
+int main(int ac, char **v)
 {
 	if (!v[1] || ac == 1)
 		return (1);
@@ -196,4 +222,4 @@ t_token	*ft_tokenizer(char *line)
 		result = result->next;
 	}
 	ft_free_tokens(head);
-}*/
+}
