@@ -3,24 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 18:09:56 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:09:50 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static void			process_tokens(t_token *s_tokens);
-static int			has_var(char *s);
 t_cmd				*parse_tokens(t_token *s_tokens);
 static t_cmd		*create_cmd(void);
 static void			add_cmd(t_cmd **head, t_cmd *new);
 static t_redirect	*create_redirect(void);
 static void			add_redirect(t_redirect **head, t_redirect *new);
 static void			add_arg(t_cmd *s_cmd, char *arg);
-static void	free_argv(char **argv);
+static void			free_argv(char **argv);
 static char			*expand_env_var(t_env *s_env, char *var);
 
 t_status	parse_command_line(t_minishell *s_minishell)
@@ -28,7 +27,8 @@ t_status	parse_command_line(t_minishell *s_minishell)
 	if (!s_minishell || !s_minishell->s_tokens)
 		return (STATUS_FAILURE);
 	process_tokens(s_minishell->s_tokens);
-	expand_variables(s_minishell->s_tokens, s_minishell->s_env);
+	handle_quotes(s_minishell->s_tokens);
+	//expand_variables(s_minishell->s_tokens, s_minishell->s_env);
 	/*s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
 	if (!s_minishell->s_cmd)
 		return (STATUS_FAILURE);*/
@@ -170,7 +170,7 @@ static int	lookup_var(t_env *s_env, char *name)
 	return (0);
 }
 */
-static int	has_var(char *s)
+int	has_var(char *s)
 {
 	int	i;
 

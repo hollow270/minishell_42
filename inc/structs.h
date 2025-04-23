@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/18 18:45:04 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:00:35 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,14 @@ typedef struct	s_redirect
 	char				*file;
 	struct s_redirect	*next;
 }						t_redirect;
+
+/*	----	FOR PARSING		----	*/
+
+typedef enum e_quotes
+{
+	NO_QUOTES,
+	DOUBLE_QUOTES,
+	SINGLE_QUOTES
+}				t_quotes;
 
 #endif

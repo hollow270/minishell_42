@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 18:13:37 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:05:02 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static char			*expand(char *ret, char *var_name, t_env *s_env);
 static int			count_dollar(char *s);
 static int			lookup_var(t_env *s_env, char *name);
 static char			*find_env_value(char *s, t_env *s_env);
-static int			has_var(char *s);
 
 void	expand_variables(t_token *s_tokens, t_env *s_env)
 {
@@ -31,7 +30,7 @@ void	expand_variables(t_token *s_tokens, t_env *s_env)
 		if (has_var(node->value))
 		{
 			node->value = expand_split(node->value, s_env);
-			printf("[%s]\n", node->value);
+			//printf("[%s]\n", node->value);
 			free(old_value);
 		}
 		old_value = node->value;
@@ -138,20 +137,6 @@ static int	lookup_var(t_env *s_env, char *name)
 		if (ft_strcmp(node->name, name + i) == 0)
 			return (1);
 		node = node->next;
-	}
-	return (0);
-}
-
-static int	has_var(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '$')
-			return (1);
-		i++;
 	}
 	return (0);
 }
