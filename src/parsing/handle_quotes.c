@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/24 11:06:29 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/24 18:01:04 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ static char	*remove_quotes(char *s)
 	char	*ret;
 
 	i = 0;
+	j = 0;
 	cur_quote = '\0';
 	ret = malloc(sizeof(char) * ft_strlen(s) - count_quotes(s) + 1);
 	if (!ret)

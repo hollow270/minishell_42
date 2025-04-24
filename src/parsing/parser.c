@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/24 12:11:59 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/24 17:56:00 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ static char			*expand_env_var(t_env *s_env, char *var);
 t_status	parse_command_line(t_minishell *s_minishell)
 {
 	if (!s_minishell || !s_minishell->s_tokens)
-		return (STATUS_FAILURE);
+		return (printf("minishell: syntax error\n"), STATUS_FAILURE);
 	if (check_syntax(s_minishell->s_tokens) == STATUS_SYNTAX_ERR)
 		return (printf("minishell: syntax error\n"), STATUS_SYNTAX_ERR);
-	//process_tokens(s_minishell->s_tokens);
-	//handle_quotes(s_minishell->s_tokens);
+	process_tokens(s_minishell->s_tokens);
+	handle_quotes(s_minishell->s_tokens);
 	//expand_variables(s_minishell->s_tokens, s_minishell->s_env);
 	/*s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
 	if (!s_minishell->s_cmd)
