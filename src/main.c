@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/22 16:57:07 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/24 16:49:05 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,31 +115,24 @@ static void	print_tokens(t_token *s_tokens)
 
 static char	*print_value(int v)
 {
-	char	*word = "word";
-	char	*pipe = "pipe";
-	char	*red_i = "red_in";
-	char	*red_o = "red_out";
-	char	*hdoc = "hdoc";
-	char	*append = "append";
-
 	if (v == 0)
-		return (word);
+		return ("word");
 	if (v == 1)
 		return ("command");
 	if (v == 2)
 		return ("string");
 	if (v == 3)
-		return (pipe);
+		return ("pipe");
 	if (v == 4)
-		return (red_i);
+		return ("red_i");
 	if (v == 5)
-		return (red_o);
+		return ("red_o");
 	if (v == 6)
-		return (hdoc);
+		return ("hdoc");
 	if (v == 7)
 		return ("EOF");
 	if (v == 8)
-		return (append);
+		return ("append");
 	if (v == 9)
 		return ("file");
 	if (v == 10)

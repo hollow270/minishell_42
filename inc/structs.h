@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/22 16:00:35 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/24 11:40:50 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef enum	e_status
 	STATUS_SUCCESS,
 	STATUS_FAILURE,
 	STATUS_MALLOC_FAIL,
+	STATUS_SYNTAX_ERR,
 	STATUS_EXIT_CMD
 }				t_status;
 
