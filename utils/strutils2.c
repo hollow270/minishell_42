@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:47:34 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 17:57:42 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:08:50 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,20 @@ char	*ft_strconcat(const char *s1, const char *s2)
 	}
 	ret[i] = '\0';
 	return (ret);
+}
+
+int	ft_strcmp2(const char *s1, const char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] != ' ' && s2[i] != ' ')
+	{
+		if (s1[i] - s2[i] != 0)
+			return (s1[i] - s2[i]);
+		i++;
+	}
+	if ((s1[i] == '\0' || s1[i] == ' ') && (s2[i] == '\0' || s2[i] == ' '))
+		return (0);
+	return (s1[i] - s2[i]);
 }

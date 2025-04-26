@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:07:45 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 16:51:35 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/26 20:54:27 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*get_env_value2(t_env *s_env, char *name)
 		i++;
 	while (node)
 	{
-		if (ft_strcmp(node->name, name + i) == 0)
+		if (ft_strcmp2(node->name, name + i) == 0)
 			return (node->value);
 		node = node->next;
 	}
