@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/24 18:04:32 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/02 23:56:38 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ static void			process_tokens(t_token *s_tokens);
 t_cmd				*parse_tokens(t_token *s_tokens);
 static t_cmd		*create_cmd(void);
 static void			add_cmd(t_cmd **head, t_cmd *new);
-static t_redirect	*create_redirect(void);
+static t_redirect	*create_redirect(t_tokens_type new_type, char *new_file);
 static void			add_redirect(t_redirect **head, t_redirect *new);
-static void			add_arg(t_cmd *s_cmd, char *arg);
+static void			add_arg(t_cmd **head, char *arg);
 static void			free_argv(char **argv);
 static char			*expand_env_var(t_env *s_env, char *var);
 
@@ -29,13 +29,33 @@ t_status	parse_command_line(t_minishell *s_minishell)
 	if (check_syntax(s_minishell->s_tokens) == STATUS_SYNTAX_ERR)
 		return (printf("minishell: syntax error\n"), STATUS_SYNTAX_ERR);
 	process_tokens(s_minishell->s_tokens);
-	handle_quotes(s_minishell->s_tokens);
-	expand_variables(s_minishell->s_tokens, s_minishell->s_env);
-	/*s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
+	handle_quotes(s_minishell->s_tokens, s_minishell->s_env);
+	//expand_unquoted(s_minishell->s_tokens, s_minishell->s_env);
+	s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
 	if (!s_minishell->s_cmd)
-		return (STATUS_FAILURE);*/
+		return (STATUS_FAILURE);
 	return (STATUS_SUCCESS);
 }
+
+/*void	expand_unquoted(t_token *s_tokens, t_env *s_env)
+{
+	t_token	*node;
+	char	*old_value;
+
+	node = s_tokens;
+	old_value = NULL;
+	while (node)
+	{
+		old_value = node->value;
+		if (has_var(node->value) == 1 && has_quotes(node->value) == 0)
+		{
+			node->value = expand_split(node->value, s_env);
+			if (old_value != NULL)
+				free(old_value);
+		}
+		node = node->next;
+	}
+}*/
 
 static void		process_tokens(t_token *s_tokens)
 {
@@ -66,27 +86,16 @@ static void		process_tokens(t_token *s_tokens)
 	}
 }
 
-int	has_var(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '$')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 t_cmd	*parse_tokens(t_token *s_tokens)
 {
+	int		first;
 	t_cmd	*s_cmd;
 	t_cmd	*curr_cmd;
 	t_token	*curr_token;
 
-	s_cmd = malloc(sizeof(s_cmd));
+	//s_cmd = malloc(sizeof(s_cmd));
+	first = 1;
+	s_cmd = create_cmd();
 	if (!s_cmd)
 		return (NULL);
 	curr_cmd = s_cmd;
@@ -95,16 +104,24 @@ t_cmd	*parse_tokens(t_token *s_tokens)
 	{
 		if (curr_token->type == TOKEN_PIPE)
 		{
-			add_cmd(&s_cmd, curr_cmd);
-			curr_cmd = create_cmd();
+			if (first == 1)
+			{
+				curr_cmd = create_cmd();
+				first = 0;
+			}
+			else
+			{
+				add_cmd(&s_cmd, curr_cmd);
+				curr_cmd = create_cmd();
+			}
 		}
-		else if (curr_token->type == TOKEN_RED_IN || curr_token->type == TOKEN_RED_OUT
-			|| curr_token->type == TOKEN_HDOC || curr_token->type == TOKEN_APPEND)
-		{
-			if (curr_token->next->type == TOKEN_VAR)
-				return (s_cmd);
-		}
+		else if (is_arg(curr_token->type))
+			add_arg(&curr_cmd, curr_token->value);
+		else if (is_redirection(curr_token->type) && is_file_eof(curr_token->next->type))
+			add_redirect(&(curr_cmd->s_redirect), create_redirect(curr_token->type, curr_token->next->value));
+		curr_token = curr_token->next;
 	}
+	add_cmd(&s_cmd, curr_cmd);
 	return (s_cmd);
 }
 
@@ -137,15 +154,15 @@ static void	add_cmd(t_cmd **head, t_cmd *new)
 	node->next = new;
 }
 
-static t_redirect	*create_redirect(void)
+static t_redirect	*create_redirect(t_tokens_type new_type, char *new_file)
 {
 	t_redirect	*new;
 
 	new = malloc(sizeof(t_redirect));
 	if (!new)
 		return (NULL);
-	new->type = 0;
-	new->file = NULL;
+	new->type = new_type;
+	new->file = ft_strdup(new_file);
 	new->next = NULL;
 	return (new);
 }
@@ -165,12 +182,26 @@ static void	add_redirect(t_redirect **head, t_redirect *new)
 	node->next = new;
 }
 
-static void	add_arg(t_cmd *s_cmd, char *arg)
+static void	add_arg(t_cmd **head, char *arg)
 {
+	t_cmd	*s_cmd;
 	char	**new_argv;
 	int		i;
 	int		j;
 
+	s_cmd = *head;
+	if (!arg)
+		return ;
+	if (!s_cmd->argv)
+	{
+		new_argv = malloc(sizeof(char *) * 2);
+		if (!new_argv)
+			return ;
+		new_argv[0] = ft_strdup(arg);
+		new_argv[1] = NULL;
+		s_cmd->argv = new_argv;
+		return ;
+	}
 	i = 0;
 	while (s_cmd->argv[i])
 		i++;
@@ -178,15 +209,14 @@ static void	add_arg(t_cmd *s_cmd, char *arg)
 	if (!new_argv)
 		return ;
 	j = 0;
-	while (s_cmd->argv[i])
+	while (j < i)
 	{
 		new_argv[j] = ft_strdup(s_cmd->argv[j]);
 		j++;
 	}
 	new_argv[j] = ft_strdup(arg);
 	new_argv[j + 1] = NULL;
-	if (s_cmd->argv)
-		free_argv(s_cmd->argv);
+	free_argv(s_cmd->argv);
 	s_cmd->argv = new_argv;
 }
 
@@ -196,8 +226,11 @@ static void	free_argv(char **argv)
 
 	i = 0;
 	while (argv[i])
-		free(argv[i]);
-	free(argv);
+		printf("[%s]\n", argv[i++]);
+		i = 0;
+	while (argv[i])
+		free(argv[i++]);
+	//free(argv);
 }
 
 static char	*expand_env_var(t_env *s_env, char *var)

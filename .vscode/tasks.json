@@ -12,7 +12,7 @@
 				"~/Desktop/42_cursus/42_minishell/utils/*.c",
 				"~/Desktop/42_cursus/42_minishell/src/main.c",
                 "-o",
-                "~/Desktop/42_cursus/42_minishell/minishell",
+                "~/Desktop/42_cursus/42_minishell/a.out",
 				"-lreadline"
             ],
             "options": {

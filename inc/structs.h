@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/24 11:40:50 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/27 18:49:24 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ typedef struct	s_env			t_env;
 typedef struct	s_token			t_token;
 typedef struct	s_cmd			t_cmd;
 typedef struct	s_redirect		t_redirect;
+typedef struct	s_parse			t_parse;
+typedef struct	s_substring		t_substring;
 
 typedef struct	s_minishell
 {
@@ -85,11 +87,18 @@ typedef struct	s_redirect
 
 /*	----	FOR PARSING		----	*/
 
-typedef enum e_quotes
+typedef enum	e_quotes
 {
-	NO_QUOTES,
-	DOUBLE_QUOTES,
-	SINGLE_QUOTES
+	UNQUOTED,
+	DOUBLE_QUOTED,
+	SINGLE_QUOTED
 }				t_quotes;
+
+typedef struct	s_substring
+{
+	char				*str;
+	t_quotes			type;
+	struct s_substring	*next;
+}				t_substring;
 
 #endif
