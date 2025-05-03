@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:47:34 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/01 20:54:06 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/03 18:47:21 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,16 @@ char	*ft_strconcat(const char *s1, const char *s2)
 
 static int	is_space(char c)
 {
-	return (c == ' ' || c == '\t' || c == '\n'
+    return (c == ' ' || c == '\t' || c == '\n'
+        || c == '\v' || c == '\f' || c == '\r'
+        || c == '\'' || c == '$' || c == '-'
+		|| c == '+' || c == '.' || c == '['
+		|| c == ']' || c == '{' || c == '}'
+		|| c == '(' || c == ')');
+	/*return (c == ' ' || c == '\t' || c == '\n'
 		|| c == '\v' || c == '\f' || c == '\r'
 		|| c == '\'' || c == '$' || c == '-'
-		|| c == '+' || c == '.');
+		|| c == '+' || c == '.');*/
 }
 
 static int is_stop_char(char c)
@@ -56,7 +62,9 @@ static int is_stop_char(char c)
     return (c == ' ' || c == '\t' || c == '\n'
         || c == '\v' || c == '\f' || c == '\r'
         || c == '\'' || c == '$' || c == '-'
-		|| c == '+' || c == '.');
+		|| c == '+' || c == '.' || c == '['
+		|| c == ']' || c == '{' || c == '}'
+		|| c == '(' || c == ')');
 }
 
 int ft_strcmp_env(const char *s1, const char *s2)

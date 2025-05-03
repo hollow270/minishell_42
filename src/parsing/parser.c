@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/02 23:56:38 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/03 19:14:59 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void			add_cmd(t_cmd **head, t_cmd *new);
 static t_redirect	*create_redirect(t_tokens_type new_type, char *new_file);
 static void			add_redirect(t_redirect **head, t_redirect *new);
 static void			add_arg(t_cmd **head, char *arg);
+static int			is_builtin(char *cmd);
 static void			free_argv(char **argv);
 static char			*expand_env_var(t_env *s_env, char *var);
 
@@ -68,9 +69,9 @@ static void		process_tokens(t_token *s_tokens)
 	while (node)
 	{
 		c = *(node->value);
-		if (c == '$')
-			node->type = TOKEN_VAR;
-		else if (node->type == TOKEN_WORD && (prv->type == TOKEN_RED_IN || prv->type == TOKEN_RED_OUT))
+		//if (c == '$')
+		//	node->type = TOKEN_VAR;
+		if (node->type == TOKEN_WORD && (prv->type == TOKEN_RED_IN || prv->type == TOKEN_RED_OUT))
 			node->type = TOKEN_FILE;
 		else if (node->type == TOKEN_WORD && prv->type == TOKEN_HDOC)
 			node->type = TOKEN_EOF;
@@ -121,7 +122,8 @@ t_cmd	*parse_tokens(t_token *s_tokens)
 			add_redirect(&(curr_cmd->s_redirect), create_redirect(curr_token->type, curr_token->next->value));
 		curr_token = curr_token->next;
 	}
-	add_cmd(&s_cmd, curr_cmd);
+	if (!first)
+		add_cmd(&s_cmd, curr_cmd);
 	return (s_cmd);
 }
 
@@ -200,6 +202,7 @@ static void	add_arg(t_cmd **head, char *arg)
 		new_argv[0] = ft_strdup(arg);
 		new_argv[1] = NULL;
 		s_cmd->argv = new_argv;
+		s_cmd->is_builtin = is_builtin(s_cmd->argv[0]);
 		return ;
 	}
 	i = 0;
@@ -216,8 +219,28 @@ static void	add_arg(t_cmd **head, char *arg)
 	}
 	new_argv[j] = ft_strdup(arg);
 	new_argv[j + 1] = NULL;
+	s_cmd->is_builtin = is_builtin(new_argv[0]);
 	free_argv(s_cmd->argv);
 	s_cmd->argv = new_argv;
+}
+
+static int	is_builtin(char *cmd)
+{
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "env") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	return (0);
 }
 
 static void	free_argv(char **argv)

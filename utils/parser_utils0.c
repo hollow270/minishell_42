@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 18:50:56 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/02 23:31:31 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/03 18:58:44 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	is_arg(t_tokens_type type)
 {
-	return (type == TOKEN_CMD || type == TOKEN_ARG);
+	return (type == TOKEN_CMD || type == TOKEN_ARG || type == TOKEN_WORD);
 }
 
 int	is_redirection(t_tokens_type type)
