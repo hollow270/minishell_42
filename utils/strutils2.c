@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 17:47:34 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/03 18:47:21 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/04 18:30:07 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,4 +144,17 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	*(ret_s + i) = '\0';
 	return (ret_s);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (NULL);
 }

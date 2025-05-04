@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/01 20:19:56 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/04 18:54:50 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,17 @@ static void			add_substring(t_substring **head, char *s, char quote);
 static t_quotes		identify_quotes(char quote);
 static int			count_substrings(char *s);
 static char			*join_substrings(t_substring *head);
+static void			split_and_insert_tokens(t_token **head, t_token *node, t_token *prv);
+static void			free_split(char **split);
 
 void	handle_quotes(t_token *s_tokens, t_env *s_env)
 {
 	t_token	*node;
+	t_token	*prv;
 	char	*old_value;
 
 	node = s_tokens;
+	prv = s_tokens;
 	old_value = NULL;
 	while (node)
 	{
@@ -45,6 +49,9 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env)
 			if (old_value != NULL)
 				free(old_value);
 		}
+		if (ft_strchr(node->value, ' ') && ft_strcmp("export", prv->value) != 0)
+			split_and_insert_tokens(&s_tokens, node, prv);
+		prv = node;
 		node = node->next;
 	}
 }
@@ -236,6 +243,44 @@ static char	*join_substrings(t_substring *head)
 		node = node->next;
 	}
 	return (ret);
+}
+
+static void	split_and_insert_tokens(t_token **head, t_token *node, t_token *prv)
+{
+	char	**split_words;
+	t_token	*new_token;
+	t_token	*next_node;
+	int		i;
+
+	split_words = ft_split(node->value, " ");
+	if (!split_words)
+		return ;
+	free(node->value);
+	node->value = ft_strdup(split_words[0]);
+	i = 1;
+	while (split_words[i])
+	{
+		new_token = malloc(sizeof(t_token));
+		if (!new_token)
+			break ;
+		new_token->value = ft_strdup(split_words[i]);
+		new_token->type = node->type;
+		new_token->next = next_node;
+		node->next = new_token;
+		node = new_token;
+		i++;
+	}
+	node->next = NULL;
+	free_split(split_words);
+}
+
+static void	free_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i])
+		free(split[i++]);
 }
 
 /*static char	*remove_quotes(char *s)

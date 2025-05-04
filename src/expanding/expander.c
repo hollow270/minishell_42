@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/03 18:51:17 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/04 18:07:28 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,9 @@ char	*scan_string(char *s, t_env *s_env)
 {
 	int		i;
 	char	*ret;
-	char	*old;
 
 	i = 0;
 	ret = ft_calloc(1, 1);
-	old = NULL;
 	while (s[i])
 	{
 		if (s[i] == '$')

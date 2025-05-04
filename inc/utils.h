@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:57:19 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/02 22:57:45 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/04 18:30:18 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,6 @@ void	*ft_calloc(size_t count, size_t size);
 int		is_arg(t_tokens_type type);
 int		is_redirection(t_tokens_type type);
 int		is_file_eof(t_tokens_type type);
+char	*ft_strchr(const char *s, int c);
 
 #endif
