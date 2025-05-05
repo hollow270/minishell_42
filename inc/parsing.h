@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 19:32:07 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/15 16:36:11 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/18 17:42:58 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 
 # include "structs.h"
 
-t_cmd	*parse(t_token *s_tokens);
+t_status	parse_command_line(t_minishell *s_minishell);
 
 #endif

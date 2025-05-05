@@ -1,22 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   environment.h                                      :+:      :+:    :+:   */
+/*   expanding.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 16:45:45 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 16:52:18 by yhajbi           ###   ########.fr       */
+/*   Created: 2025/04/20 18:08:14 by yhajbi            #+#    #+#             */
+/*   Updated: 2025/04/20 18:12:01 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENVIRONMENT_H
-# define ENVIRONMENT_H
+#ifndef EXPANDING_H
+# define EXPANDING_H
 
-# include "structs.h"
+#include "minishell.h"
 
-t_env	*get_env(char **env);
-char	*get_env_value(t_env *s_env, char *name);
-char	*get_env_value2(t_env *s_env, char *name);
+void	expand_variables(t_token *s_tokens, t_env *s_env);
 
 #endif

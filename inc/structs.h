@@ -57,6 +57,8 @@ typedef enum	e_tokens_type
 	TOKEN_EOF,
 	TOKEN_APPEND,	/* >> */
 	TOKEN_FILE,
+	TOKEN_ARG,
+	TOKEN_VAR
 }		t_tokens_type;
 
 typedef struct	s_token

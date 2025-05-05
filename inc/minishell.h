@@ -28,6 +28,7 @@
 # include "structs.h"
 # include "tokenizer.h"
 # include "parsing.h"
+# include "expanding.h"
 # include "environment.h"
 # include "utils.h"
 # include "execution.h"
