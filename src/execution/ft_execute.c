@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/02 11:24:50 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:01:40 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ static int	exec_builtin(char **cmd, t_env *env)
 		return (ft_unset(cmd, env));
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 		exit(0);
-	else
-		return (1);
 }
 
 static void	setup_redirections(t_cmd *cmd)
@@ -94,9 +92,6 @@ static void	setup_redirections(t_cmd *cmd)
 static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd, 
 		int is_last, t_minishell *env)
 {
-	int exit_status;
-	
-	exit_status = 0;
 	if (prev_fd != -1)
 	{
 		dup2(prev_fd, STDIN_FILENO);
@@ -111,8 +106,8 @@ static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd,
 	setup_redirections(cmd);
 	if (cmd->is_builtin)
 	{
-		exit_status = exec_builtin(cmd->argv, env->s_env);
-		exit(exit_status);
+		env->exit_status = exec_builtin(cmd->argv, env->s_env);
+		exit (env->exit_status);
 	}
 	else
 		exec_cmd(cmd->argv, env->s_env);
