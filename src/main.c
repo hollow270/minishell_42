@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/18 18:45:23 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/03 18:53:06 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static void	print_env(t_env *env);
 static void	print_tokens(t_token *s_tokens);
 static char	*print_value(int v);
 static void	print_cmds(t_cmd *s_cmd);
+void print_cmd_structure(t_cmd *cmd_list);
 
 /*			---------		MAIN		--------			*/
 
@@ -77,7 +78,8 @@ static t_status	minishell(t_minishell **s_minishell)
 	parse_command_line(s_ms);
 	//s_ms->s_cmd = parse(s_ms->s_tokens);
 	//print_cmds(s_ms->s_cmd);
-	print_tokens(s_ms->s_tokens);
+	//print_tokens(s_ms->s_tokens);
+	print_cmd_structure(s_ms->s_cmd);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
 	return (STATUS_SUCCESS);
@@ -115,31 +117,24 @@ static void	print_tokens(t_token *s_tokens)
 
 static char	*print_value(int v)
 {
-	char	*word = "word";
-	char	*pipe = "pipe";
-	char	*red_i = "red_in";
-	char	*red_o = "red_out";
-	char	*hdoc = "hdoc";
-	char	*append = "append";
-
 	if (v == 0)
-		return (word);
+		return ("word");
 	if (v == 1)
 		return ("command");
 	if (v == 2)
 		return ("string");
 	if (v == 3)
-		return (pipe);
+		return ("pipe");
 	if (v == 4)
-		return (red_i);
+		return ("red_i");
 	if (v == 5)
-		return (red_o);
+		return ("red_o");
 	if (v == 6)
-		return (hdoc);
+		return ("hdoc");
 	if (v == 7)
 		return ("EOF");
 	if (v == 8)
-		return (append);
+		return ("append");
 	if (v == 9)
 		return ("file");
 	if (v == 10)
@@ -159,4 +154,110 @@ static void	print_cmds(t_cmd *head)
 		printf("------------------------------\n");
 		head = head->next;
 	}
+}
+
+// Function to convert token type to string for display
+const char *token_type_to_str(t_tokens_type type)
+{
+    switch (type)
+    {
+        case TOKEN_WORD: return "TOKEN_WORD";
+        case TOKEN_CMD: return "TOKEN_CMD";
+        case TOKEN_STR: return "TOKEN_STR";
+        case TOKEN_PIPE: return "TOKEN_PIPE";
+        case TOKEN_RED_IN: return "TOKEN_RED_IN";
+        case TOKEN_RED_OUT: return "TOKEN_RED_OUT";
+        case TOKEN_HDOC: return "TOKEN_HDOC";
+        case TOKEN_EOF: return "TOKEN_EOF";
+        case TOKEN_APPEND: return "TOKEN_APPEND";
+        case TOKEN_FILE: return "TOKEN_FILE";
+        case TOKEN_ARG: return "TOKEN_ARG";
+        case TOKEN_VAR: return "TOKEN_VAR";
+        default: return "UNKNOWN";
+    }
+}
+
+// Function to print redirection list
+void print_redirects(t_redirect *redirect, int indent)
+{
+    int i;
+    t_redirect *current = redirect;
+    
+    while (current)
+    {
+        // Print indentation
+        for (i = 0; i < indent; i++)
+            printf("  ");
+        
+        printf("└─ Redirect: type=%s, file='%s'\n", 
+               token_type_to_str(current->type), 
+               current->file ? current->file : "(null)");
+        
+        current = current->next;
+    }
+}
+
+// Function to print argv array
+void print_argv(char **argv, int indent)
+{
+    int i;
+    
+    if (!argv)
+    {
+        for (i = 0; i < indent; i++)
+            printf("  ");
+        printf("└─ argv: (null)\n");
+        return;
+    }
+    
+    for (i = 0; i < indent; i++)
+        printf("  ");
+    printf("└─ argv: [");
+    
+    for (i = 0; argv[i]; i++)
+    {
+        printf("\"%s\"", argv[i]);
+        if (argv[i + 1])
+            printf(", ");
+    }
+    printf("]\n");
+}
+
+// Main function to print command structure
+void print_cmd_structure(t_cmd *cmd_list)
+{
+    int cmd_count = 0;
+    t_cmd *current = cmd_list;
+    
+    printf("Command Structure:\n");
+    
+    if (!current)
+    {
+        printf("  (empty command list)\n");
+        return;
+    }
+    
+    while (current)
+    {
+        printf("Command %d:\n", ++cmd_count);
+        printf("  ├─ is_builtin: %d\n", current->is_builtin);
+        
+        // Print argv array
+        print_argv(current->argv, 2);
+        
+        // Print redirections
+        if (current->s_redirect)
+        {
+            printf("  ├─ Redirections:\n");
+            print_redirects(current->s_redirect, 3);
+        }
+        else
+        {
+            printf("  └─ Redirections: (none)\n");
+        }
+        
+        current = current->next;
+        if (current)
+            printf("\n");
+    }
 }

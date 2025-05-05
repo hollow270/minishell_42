@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:38:43 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 17:57:02 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/01 18:55:30 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,15 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t n)
 	len = ft_strlen(src);
 	if (n == 0)
 		return (len);
-	while (*src && n > 1)
+	if (src)
 	{
-		*dest = *src;
-		dest++;
-		src++;
-		n--;
+		while (*src && n > 1)
+		{
+			*dest = *src;
+			dest++;
+			src++;
+			n--;
+		}
 	}
 	*dest = '\0';
 	return (len);

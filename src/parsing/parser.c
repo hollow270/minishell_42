@@ -3,37 +3,60 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 18:09:56 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/03 19:14:59 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static void			process_tokens(t_token *s_tokens);
-static int			has_var(char *s);
 t_cmd				*parse_tokens(t_token *s_tokens);
 static t_cmd		*create_cmd(void);
 static void			add_cmd(t_cmd **head, t_cmd *new);
-static t_redirect	*create_redirect(void);
+static t_redirect	*create_redirect(t_tokens_type new_type, char *new_file);
 static void			add_redirect(t_redirect **head, t_redirect *new);
-static void			add_arg(t_cmd *s_cmd, char *arg);
-static void	free_argv(char **argv);
+static void			add_arg(t_cmd **head, char *arg);
+static int			is_builtin(char *cmd);
+static void			free_argv(char **argv);
 static char			*expand_env_var(t_env *s_env, char *var);
 
 t_status	parse_command_line(t_minishell *s_minishell)
 {
 	if (!s_minishell || !s_minishell->s_tokens)
-		return (STATUS_FAILURE);
+		return (printf("minishell: syntax error\n"), STATUS_FAILURE);
+	if (check_syntax(s_minishell->s_tokens) == STATUS_SYNTAX_ERR)
+		return (printf("minishell: syntax error\n"), STATUS_SYNTAX_ERR);
 	process_tokens(s_minishell->s_tokens);
-	expand_variables(s_minishell->s_tokens, s_minishell->s_env);
-	/*s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
+	handle_quotes(s_minishell->s_tokens, s_minishell->s_env);
+	//expand_unquoted(s_minishell->s_tokens, s_minishell->s_env);
+	s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
 	if (!s_minishell->s_cmd)
-		return (STATUS_FAILURE);*/
+		return (STATUS_FAILURE);
 	return (STATUS_SUCCESS);
 }
+
+/*void	expand_unquoted(t_token *s_tokens, t_env *s_env)
+{
+	t_token	*node;
+	char	*old_value;
+
+	node = s_tokens;
+	old_value = NULL;
+	while (node)
+	{
+		old_value = node->value;
+		if (has_var(node->value) == 1 && has_quotes(node->value) == 0)
+		{
+			node->value = expand_split(node->value, s_env);
+			if (old_value != NULL)
+				free(old_value);
+		}
+		node = node->next;
+	}
+}*/
 
 static void		process_tokens(t_token *s_tokens)
 {
@@ -46,9 +69,9 @@ static void		process_tokens(t_token *s_tokens)
 	while (node)
 	{
 		c = *(node->value);
-		if (c == '$')
-			node->type = TOKEN_VAR;
-		else if (node->type == TOKEN_WORD && (prv->type == TOKEN_RED_IN || prv->type == TOKEN_RED_OUT))
+		//if (c == '$')
+		//	node->type = TOKEN_VAR;
+		if (node->type == TOKEN_WORD && (prv->type == TOKEN_RED_IN || prv->type == TOKEN_RED_OUT))
 			node->type = TOKEN_FILE;
 		else if (node->type == TOKEN_WORD && prv->type == TOKEN_HDOC)
 			node->type = TOKEN_EOF;
@@ -63,134 +86,17 @@ static void		process_tokens(t_token *s_tokens)
 		node = node->next;
 	}
 }
-/*
-static void	expand_variables(t_token *s_tokens, t_env *s_env)
-{
-	t_token	*node;
-	char	*old_value;
-
-	node = s_tokens;
-	old_value = node->value;
-	while (node)
-	{
-		if (has_var(node->value))
-		{
-			node->value = expand_split(node->value, s_env);
-			printf("[%s]\n", node->value);
-			free(old_value);
-		}
-		old_value = node->value;
-		node = node->next;
-	}
-}
-
-static char	*expand_split(char *s, t_env *s_env)
-{
-	int		i;
-	char	**split;
-	char	*ret;
-	char	*old;
-
-	i = 0;
-	split = ft_split(s, "$");
-	ret = NULL;
-	old = NULL;
-	while (split[i])
-	{
-		if (lookup_var(s_env, split[i]) == 1)
-			ret = expand(ret, split[i], s_env);
-		else
-		{
-			old = ret;
-			ret = ft_strconcat(ret, split[i]);
-			free(old);
-		}
-		i++;
-	}
-	return (ret);
-}
-
-static char	*expand(char *ret, char *var_name, t_env *s_env)
-{
-	int		i;
-	char	*ret2;
-	char	*value;
-
-	if (!ret)
-		ret2 = malloc(sizeof(char) * (ft_strlen(get_env_value2(s_env, var_name)) + 1));
-	else
-		ret2 = malloc(sizeof(char) * (ft_strlen(ret) + ft_strlen(get_env_value2(s_env, var_name)) + 1));
-	if (!ret2)
-		return (NULL);
-	i = 0;
-	value = get_env_value2(s_env, var_name);
-	if (ret)
-	{
-		while (ret[i])
-		{
-			ret2[i] = ret[i];
-			i++;
-		}
-	}
-	while (value[i])
-	{
-		ret2[i] = value[i];
-		i++;
-	}
-	ret2[i] = '\0';
-	free(ret);
-	return (ret2);
-}
-
-static char	*find_env_value(char *s, t_env *s_env)
-{
-	t_env	*node;
-
-	node = s_env;
-	while (node)
-	{
-		if (ft_strcmp(s, node->name))
-			return (node->value);
-		node->next;
-	}
-	return (NULL);
-}
-
-static int	lookup_var(t_env *s_env, char *name)
-{
-	t_env	*node;
-
-	node = s_env;
-	while (node)
-	{
-		if (ft_strcmp(node->name, name) == 0)
-			return (1);
-		node = node->next;
-	}
-	return (0);
-}
-*/
-static int	has_var(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '$')
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 t_cmd	*parse_tokens(t_token *s_tokens)
 {
+	int		first;
 	t_cmd	*s_cmd;
 	t_cmd	*curr_cmd;
 	t_token	*curr_token;
 
-	s_cmd = malloc(sizeof(s_cmd));
+	//s_cmd = malloc(sizeof(s_cmd));
+	first = 1;
+	s_cmd = create_cmd();
 	if (!s_cmd)
 		return (NULL);
 	curr_cmd = s_cmd;
@@ -199,16 +105,25 @@ t_cmd	*parse_tokens(t_token *s_tokens)
 	{
 		if (curr_token->type == TOKEN_PIPE)
 		{
-			add_cmd(&s_cmd, curr_cmd);
-			curr_cmd = create_cmd();
+			if (first == 1)
+			{
+				curr_cmd = create_cmd();
+				first = 0;
+			}
+			else
+			{
+				add_cmd(&s_cmd, curr_cmd);
+				curr_cmd = create_cmd();
+			}
 		}
-		else if (curr_token->type == TOKEN_RED_IN || curr_token->type == TOKEN_RED_OUT
-			|| curr_token->type == TOKEN_HDOC || curr_token->type == TOKEN_APPEND)
-		{
-			if (curr_token->next->type == TOKEN_VAR)
-				return (s_cmd);
-		}
+		else if (is_arg(curr_token->type))
+			add_arg(&curr_cmd, curr_token->value);
+		else if (is_redirection(curr_token->type) && is_file_eof(curr_token->next->type))
+			add_redirect(&(curr_cmd->s_redirect), create_redirect(curr_token->type, curr_token->next->value));
+		curr_token = curr_token->next;
 	}
+	if (!first)
+		add_cmd(&s_cmd, curr_cmd);
 	return (s_cmd);
 }
 
@@ -241,15 +156,15 @@ static void	add_cmd(t_cmd **head, t_cmd *new)
 	node->next = new;
 }
 
-static t_redirect	*create_redirect(void)
+static t_redirect	*create_redirect(t_tokens_type new_type, char *new_file)
 {
 	t_redirect	*new;
 
 	new = malloc(sizeof(t_redirect));
 	if (!new)
 		return (NULL);
-	new->type = 0;
-	new->file = NULL;
+	new->type = new_type;
+	new->file = ft_strdup(new_file);
 	new->next = NULL;
 	return (new);
 }
@@ -269,12 +184,27 @@ static void	add_redirect(t_redirect **head, t_redirect *new)
 	node->next = new;
 }
 
-static void	add_arg(t_cmd *s_cmd, char *arg)
+static void	add_arg(t_cmd **head, char *arg)
 {
+	t_cmd	*s_cmd;
 	char	**new_argv;
 	int		i;
 	int		j;
 
+	s_cmd = *head;
+	if (!arg)
+		return ;
+	if (!s_cmd->argv)
+	{
+		new_argv = malloc(sizeof(char *) * 2);
+		if (!new_argv)
+			return ;
+		new_argv[0] = ft_strdup(arg);
+		new_argv[1] = NULL;
+		s_cmd->argv = new_argv;
+		s_cmd->is_builtin = is_builtin(s_cmd->argv[0]);
+		return ;
+	}
 	i = 0;
 	while (s_cmd->argv[i])
 		i++;
@@ -282,16 +212,35 @@ static void	add_arg(t_cmd *s_cmd, char *arg)
 	if (!new_argv)
 		return ;
 	j = 0;
-	while (s_cmd->argv[i])
+	while (j < i)
 	{
 		new_argv[j] = ft_strdup(s_cmd->argv[j]);
 		j++;
 	}
 	new_argv[j] = ft_strdup(arg);
 	new_argv[j + 1] = NULL;
-	if (s_cmd->argv)
-		free_argv(s_cmd->argv);
+	s_cmd->is_builtin = is_builtin(new_argv[0]);
+	free_argv(s_cmd->argv);
 	s_cmd->argv = new_argv;
+}
+
+static int	is_builtin(char *cmd)
+{
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "env") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	return (0);
 }
 
 static void	free_argv(char **argv)
@@ -300,8 +249,11 @@ static void	free_argv(char **argv)
 
 	i = 0;
 	while (argv[i])
-		free(argv[i]);
-	free(argv);
+		printf("[%s]\n", argv[i++]);
+		i = 0;
+	while (argv[i])
+		free(argv[i++]);
+	//free(argv);
 }
 
 static char	*expand_env_var(t_env *s_env, char *var)

@@ -4,7 +4,8 @@ RD = -lreadline
 HED = inc/
 SRC = src/main.c src/initialization/get_env.c utils/strutils1.c utils/free_minishell.c \
 src/initialization/env_utils0.c src/tokenizer/ft_tokenizer.c src/parsing/parser.c \
-utils/ft_split.c utils/strutils2.c src/expanding/expander.c
+utils/ft_split.c utils/strutils2.c src/expanding/expander.c src/parsing/handle_quotes.c \
+src/parsing/syntax.c utils/strutils3.c utils/memory_utils0.c utils/parser_utils0.c
 OBJ = $(SRC:.c=.o)
 
 NAME = minishell
