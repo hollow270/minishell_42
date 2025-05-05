@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:11:28 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/30 17:23:22 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:16:47 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 char	*ft_strjoin_free(char *s1, char *s2);
 int		ft_strcmp(const char *s1, const char *s2);
-void	free_split(char **split);
+void	free_split_2(char **split);
 char	*get_next_line(int fd);
-char	**ft_split(char const *s, char c);
+char	**ft_split_2(char const *s, char c);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(char *s);
 int		apply_redirections(t_redirect *red);

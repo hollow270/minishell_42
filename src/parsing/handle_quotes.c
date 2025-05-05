@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/04 18:54:50 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/05 16:36:01 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,14 @@ static char	*remove_quotes(char *s, t_env *s_env)
 	if (!list)
 		return (NULL);
 	t_substring	*node = list;
-	while (node)
+	/*while (node)
 	{
 		printf("[%s] --> %d\n", node->str, node->type);
 		node = node->next;
-	}
+	}*/
 	expand_variables(&list, s_env);
 	ret = join_substrings(list);
-	printf("[%s]\n", ret);
+	//printf("[%s]\n", ret);
 	/*free_substrings(list);
 	if (!ret)
 		return (NULL);*/

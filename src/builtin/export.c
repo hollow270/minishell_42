@@ -6,11 +6,12 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 14:13:32 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/30 17:20:02 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:25:55 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/execution.h"
+#include "../../inc/minishell.h"
+//#include "../../inc/execution.h"
 
 // #include <stdio.h>
 // #include <stdlib.h>
@@ -75,42 +76,42 @@
 // 	}
 // }
 
-char	*ft_strdup(char *s)
-{
-	char	*d_s;
-	char	*d;
+// char	*ft_strdup(char *s)
+// {
+// 	char	*d_s;
+// 	char	*d;
 
-	d_s = (char *)malloc(strlen(s) + 1);
-	if (!d_s)
-		return (NULL);
-	d = d_s;
-	while (*s)
-	{
-		*d_s = *s;
-		d_s++;
-		s++;
-	}
-	*d_s = '\0';
-	return (d);
-}
+// 	d_s = (char *)malloc(strlen(s) + 1);
+// 	if (!d_s)
+// 		return (NULL);
+// 	d = d_s;
+// 	while (*s)
+// 	{
+// 		*d_s = *s;
+// 		d_s++;
+// 		s++;
+// 	}
+// 	*d_s = '\0';
+// 	return (d);
+// }
 
-char *ft_strndup(const char *s, size_t n)
-{
-    char *dup;
-    size_t i;
+// char *ft_strndup(const char *s, size_t n)
+// {
+//     char *dup;
+//     size_t i;
     
-    dup = malloc(n + 1);
-    if (!dup)
-        return (NULL);
-    i = 0;
-    while (i < n && s[i])
-    {
-        dup[i] = s[i];
-        i++;
-    }
-    dup[i] = '\0';
-    return (dup);
-}
+//     dup = malloc(n + 1);
+//     if (!dup)
+//         return (NULL);
+//     i = 0;
+//     while (i < n && s[i])
+//     {
+//         dup[i] = s[i];
+//         i++;
+//     }
+//     dup[i] = '\0';
+//     return (dup);
+// }
 
 char *ft_strjoin(char *s1, char *s2)
 {
