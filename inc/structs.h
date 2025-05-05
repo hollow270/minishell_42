@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/27 18:49:24 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/05 15:45:31 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct	s_minishell
 	t_token	*s_tokens;
 	t_cmd	*s_cmd;
 	int		stdfd[2];
+	int		exit_status;
 }			t_minishell;
 
 typedef struct	s_env
