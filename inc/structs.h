@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/16 17:40:51 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/04/30 18:16:03 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ typedef struct	s_minishell
 	t_token	*s_tokens;
 	t_cmd	*s_cmd;
 	int		stdfd[2];
+	int		exit_status;
+	
 }			t_minishell;
 
 typedef struct	s_env

@@ -6,11 +6,11 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 14:16:38 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/20 19:48:53 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/04/29 13:51:44 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../inc/execution.h"
 
 // #include <stdio.h>
 // #include <stdlib.h>
@@ -70,12 +70,12 @@
 // 	return new;
 // }
 
-char	*search_for_dir(t_env *env, char *name)
+static char	*search_for_dir(t_env *env, char *name)
 {
 	t_env	*tmp_env;
 
 	tmp_env = env;
-	while(tmp_env)
+	while (tmp_env)
 	{
 		if (!ft_strcmp(tmp_env->name, name))
 			return (tmp_env->value);
@@ -83,20 +83,11 @@ char	*search_for_dir(t_env *env, char *name)
 	}
 	return (NULL);
 }
-int	change_pwd(char *path, t_env *env)
+
+static void	update_oldpwd(t_env *env, char *old_pwd)
 {
 	t_env	*tmp;
-	char	*cwd;
-	char	*old_pwd;
-	int exitstatus =0;
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		exitstatus = 1;
-		perror("getcwd:");
-	}
-	old_pwd = search_for_dir(env, "PWD");
 	tmp = env;
 	while (tmp)
 	{
@@ -104,10 +95,16 @@ int	change_pwd(char *path, t_env *env)
 		{
 			free(tmp->value);
 			tmp->value = ft_strdup(old_pwd);
-			break;
+			break ;
 		}
 		tmp = tmp->next;
 	}
+}
+
+static void	update_pwd(t_env *env, char *cwd)
+{
+	t_env	*tmp;
+
 	tmp = env;
 	while (tmp)
 	{
@@ -115,15 +112,33 @@ int	change_pwd(char *path, t_env *env)
 		{
 			free(tmp->value);
 			tmp->value = ft_strdup(cwd);
-			break;
+			break ;
 		}
 		tmp = tmp->next;
 	}
-	free (cwd);
+}
+
+static int	change_pwd(char *path, t_env *env)
+{
+	char	*cwd;
+	char	*old_pwd;
+	int		exitstatus;
+
+	exitstatus = 0;
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		exitstatus = 1;
+		perror("getcwd:");
+	}
+	old_pwd = search_for_dir(env, "PWD");
+	update_oldpwd(env, old_pwd);
+	update_pwd(env, cwd);
+	free(cwd);
 	return (exitstatus);
 }
 
-int	cd(char **cmd, t_env *env)
+int	ft_cd(char **cmd, t_env *env)
 {
 	char	*path;
 
@@ -140,9 +155,9 @@ int	cd(char **cmd, t_env *env)
 	else
 		path = cmd[1];
 	if (chdir(path) == -1)
-		return (perror("cd:"), 1);
+		return (perror("cd"), 1);
 	if (change_pwd(path, env))
-		return (perror("cd:"), 1);
+		return (perror("cd"), 1);
 	return (0);
 }
 
