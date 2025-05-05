@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:39 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/05 15:45:15 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/05 16:11:09 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 # include "structs.h"
 # include "tokenizer.h"
 # include "parsing.h"
-# include "expanding.h"
 # include "environment.h"
 # include "utils.h"
 # include "execution.h"
