@@ -6,11 +6,11 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 14:13:32 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/21 19:19:42 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/04/30 17:20:02 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../inc/execution.h"
 
 // #include <stdio.h>
 // #include <stdlib.h>
@@ -75,24 +75,80 @@
 // 	}
 // }
 
-// char	*ft_strdup(char *s)
-// {
-// 	char	*d_s;
-// 	char	*d;
+char	*ft_strdup(char *s)
+{
+	char	*d_s;
+	char	*d;
 
-// 	d_s = (char *)malloc(strlen(s) + 1);
-// 	if (!d_s)
-// 		return (NULL);
-// 	d = d_s;
-// 	while (*s)
-// 	{
-// 		*d_s = *s;
-// 		d_s++;
-// 		s++;
-// 	}
-// 	*d_s = '\0';
-// 	return (d);
-// }
+	d_s = (char *)malloc(strlen(s) + 1);
+	if (!d_s)
+		return (NULL);
+	d = d_s;
+	while (*s)
+	{
+		*d_s = *s;
+		d_s++;
+		s++;
+	}
+	*d_s = '\0';
+	return (d);
+}
+
+char *ft_strndup(const char *s, size_t n)
+{
+    char *dup;
+    size_t i;
+    
+    dup = malloc(n + 1);
+    if (!dup)
+        return (NULL);
+    i = 0;
+    while (i < n && s[i])
+    {
+        dup[i] = s[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
+}
+
+char *ft_strjoin(char *s1, char *s2)
+{
+    char    *result;
+    size_t  len1;
+    size_t  len2;
+    size_t  i;
+    size_t  j;
+    
+    if (!s1 && !s2)
+        return (NULL);
+    if (!s1)
+        return (ft_strdup(s2));
+    if (!s2)
+        return (ft_strdup(s1));
+        
+    len1 = strlen(s1);
+    len2 = strlen(s2);
+    result = malloc(len1 + len2 + 1);
+    if (!result)
+        return (NULL);
+        
+    i = 0;
+    while (i < len1)
+    {
+        result[i] = s1[i];
+        i++;
+    }
+    
+    j = 0;
+    while (j < len2)
+    {
+        result[i + j] = s2[j];
+        j++;
+    }
+    result[i + j] = '\0';
+    return (result);
+}
 
 void	free_copy(t_env *copy)
 {
@@ -238,58 +294,257 @@ int check_valid_input(char *cmd)
     return (0);
 }
 
-void	export(char **cmd, t_env *env)
+t_env	*ft_lstnew(char *name, char *value)
 {
-	int	i;
+	t_env	*node;
 
-	i = 0;
-	if(!cmd[1])
+	node = (t_env *)malloc(sizeof(t_env));
+	if (!node)
+		return (NULL);
+	node -> name = name;
+	node -> value = value;
+	node -> next = NULL;
+	return (node);
+}
+
+void	ft_lstadd_back(t_env *env, t_env *new)
+{
+	t_env	*temp;
+
+	if (!new || !env)
+		return ;
+	if (!env->name && !env->value)
+	{
+		env = new;
+		return ;
+	}
+	temp = env;
+	while (temp -> next != NULL)
+		temp = temp -> next;
+	temp -> next = new;
+}
+
+char **modified_split(char *cmd, int flag)
+{
+    int     i;
+    char    **name_value;
+    
+    name_value = malloc(2 * sizeof(char *));
+    if (!name_value)
+        return (NULL);
+    i = 0;
+    if (flag == 3)
+    {
+        while (cmd[i] && cmd[i] != '=')
+            i++;
+        name_value[0] = ft_strndup(cmd, i);
+        name_value[1] = ft_strdup(cmd + i + 1);
+    }
+    else if (flag == 4)
+    {
+        while (cmd[i] && !(cmd[i] == '+' && cmd[i+1] == '='))
+            i++;
+        name_value[0] = ft_strndup(cmd, i);
+        name_value[1] = ft_strdup(cmd + i + 2);
+    }
+    if (!name_value[0] || !name_value[1])
+    {
+        if (name_value[0])
+            free(name_value[0]);
+        if (name_value[1])
+            free(name_value[1]);
+        free(name_value);
+        return (NULL);
+    }
+    return (name_value);
+}
+
+t_env *find_env_var(t_env *env, char *name)
+{
+    t_env *current;
+    
+    current = env;
+    while (current)
+    {
+        if (ft_strcmp(current->name, name) == 0)
+            return (current);
+        current = current->next;
+    }
+    return (NULL);
+}
+
+static void	handle_export_new_var(char *name, t_env *env)
+{
+	t_env	*new_node;
+	
+	new_node = ft_lstnew(ft_strdup(name), NULL);
+	if (new_node)
+		ft_lstadd_back(env, new_node);
+}
+
+static void	handle_existing_var_append(t_env *existing, char **name_value)
+{
+	char	*tmp;
+	
+	if (existing->value)
+	{
+		tmp = ft_strjoin(existing->value, name_value[1]);
+		free(existing->value);
+		existing->value = tmp;
+		free(name_value[0]);
+		free(name_value[1]);
+	}
+	else
+	{
+		existing->value = name_value[1];
+		free(name_value[0]);
+	}
+}
+
+static void	handle_non_existing_var(char **name_value, t_env *env)
+{
+	t_env	*new_node;
+	
+	new_node = ft_lstnew(name_value[0], name_value[1]);
+	if (new_node)
+		ft_lstadd_back(env, new_node);
+	else
+	{
+		free(name_value[0]);
+		free(name_value[1]);
+	}
+}
+
+static void	handle_variable_with_value(char *cmd, int flag, t_env *env)
+{
+	char	**name_value;
+	t_env	*existing;
+	
+	name_value = modified_split(cmd, flag);
+	if (!name_value)
+		return ;
+	existing = find_env_var(env, name_value[0]);
+	if (existing)
+	{
+		if (flag == 4 && existing->value)
+			handle_existing_var_append(existing, name_value);
+		else
+		{
+			free(existing->value);
+			existing->value = name_value[1];
+			free(name_value[0]);
+		}
+	}
+	else
+		handle_non_existing_var(name_value, env);
+	free(name_value);
+}
+
+int	ft_export(char **cmd, t_env *env)
+{
+	int		i;
+	int		flag;
+
+	i = 1;
+	if (!cmd[1])
 		sort_and_display(env);
 	while (cmd[i])
 	{
-		if(check_valid_input(cmd[i]))
+		flag = check_valid_input(cmd[i]);
+		if (flag == 1)
 		{
-			remove_quotes(cmd[i]);
-			add_back(env);
+			printf("export: `%s': not a valid identifier\n", cmd[i]);
+			i++;
+			continue ;
 		}
+		if (flag == 2)
+		{
+			if (!find_env_var(env, cmd[i]))
+				handle_export_new_var(cmd[i], env);
+		}
+		else if (flag == 3 || flag == 4)
+			handle_variable_with_value(cmd[i], flag, env);
 		i++;
 	}
+	return (0);
 }
+
+// Declare or include your functions and structs here
+// (e.g., t_env, export, new_node, append_node, etc.)
+// Assume your export.c content is compiled with this
 
 // int main(void)
 // {
 // 	t_env *env = NULL;
 
-// 	// Edge case 1: Variable with NULL value
-// 	append_node(&env, new_node("EMPTY", NULL)); // should print: declare -x EMPTY
-
-// 	// Edge case 2: Variable names with underscores and ASCII order sensitivity
+// 	// --- Prepopulate environment ---
+// 	append_node(&env, new_node("EMPTY", NULL));
 // 	append_node(&env, new_node("__X", "secret2"));
-// 		append_node(&env, new_node("_X", "secret"));
+// 	append_node(&env, new_node("_X", "secret"));
 // 	append_node(&env, new_node("__x", "secret2"));
 // 	append_node(&env, new_node("_x", "public"));
-
-// 	// Edge case 3: Names with numeric suffixes
 // 	append_node(&env, new_node("X1", "val1"));
 // 	append_node(&env, new_node("X10", "val10"));
 // 	append_node(&env, new_node("X2", "val2"));
-// 	append_node(&env, new_node("X", "===\"kmlk\""));
-
-// 	// Edge case 4: Very long name and value
+// 	append_node(&env, new_node("X", "===kmlk"));
 // 	append_node(&env, new_node("LONGVARXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
 // 		"LONGVALUEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"));
-
-// 	// Edge case 5: Variable with only one character
 // 	append_node(&env, new_node("Q", "quick"));
-
-// 	// Edge case 6: Mixed casing (should sort by ASCII, so uppercase before lowercase)
 // 	append_node(&env, new_node("a", "lowercase"));
 // 	append_node(&env, new_node("A", "uppercase"));
 
-// 	char *cmd[] = {"export", NULL}; // simulate export with no args
+// 	// --- Begin Tests ---
+	
+// 	// Test 1: export with no arguments (should print sorted env)
+// 	char *cmd1[] = {"export", NULL};
+// 	printf("=== Test 1: export with prepopulated env ===\n");
+// 	export(cmd1, env);
 
-// 	export(cmd, env);
+// 	// Test 2: Valid variable declarations
+// 	printf("\n=== Test 2: Valid exports ===\n");
+// 	char *cmd2[] = {"export", "FOO=bar", "BAR=baz", "EMPTY2=", "ONLYNAME", NULL};
+// 	export(cmd2, env);
 
+
+// 	// Test 3: Invalid identifiers
+// 	printf("\n=== Test 3: Invalid identifiers ===\n");
+// 	char *cmd3[] = {"export", "1INVALID=bad", "=equals", "VA@R=oops", "++=fail", "ONLYNAME2", NULL};
+// 	export(cmd3, env);
+
+// 	// Test 4: Appending to existing and non-existing variables
+// 	printf("\n=== Test 4: Appending values ===\n");
+// 	char *cmd4[] = {"export", "FOO+=123", "NEWVAR+=value", NULL};
+// 	export(cmd4, env);
+
+// 	// Test 5: Reassigning existing variable
+// 	printf("\n=== Test 5: Reassign existing variable ===\n");
+// 	char *cmd5[] = {"export", "FOO=newvalue", NULL};
+// 	export(cmd5, env);
+// 	char *cmd10[] = {"export", NULL};
+// 	printf("=== Test 2: export with prepopulated env ===\n");
+// 	export(cmd10, env);
+
+// 	// Test 6: export with no arguments (final sorted list)
+// 	printf("\n=== Test 6: Final sorted export ===\n");
+// 	export(cmd1, env);
+
+// 	// Test 7: Long name and value again
+// 	printf("\n=== Test 7: Long names and values (again) ===\n");
+// 	char *cmd7[] = {"export", 
+// 		"LONGVARXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX2=LONGVALUEZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ", 
+// 		NULL};
+// 	export(cmd7, env);
+
+// 	// Test 8: Mixed casing and underscore (more)
+// 	printf("\n=== Test 8: Mixed casing and underscore ===\n");
+// 	char *cmd8[] = {"export", "b__=secon_/dlower", "B=SECONDUPPER", NULL};
+// 	export(cmd8, env);
+
+// 	// Final output again
+// 	printf("\n=== Final Sorted Export (after all operations) ===\n");
+// 	export(cmd1, env);
+
+// 	// Cleanup
 // 	free_env(env);
 // 	return 0;
 // }

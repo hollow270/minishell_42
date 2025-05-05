@@ -1,5 +1,10 @@
 {
 	"files.associations": {
-		"structs.h": "c"
+		"structs.h": "c",
+		"unistd.h": "c",
+		"minishell.h": "c",
+		"history.h": "c",
+		"fcntl.h": "c",
+		"execution.h": "c"
 	}
 }

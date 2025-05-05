@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:39 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/04/20 18:10:22 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/04/23 17:17:52 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <readline/history.h>
 # include <curses.h>
 # include <term.h>
-# include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
 # include <errno.h>
@@ -32,6 +31,7 @@
 # include "expanding.h"
 # include "environment.h"
 # include "utils.h"
+# include "execution.h"
 
 # define PROMPT	"minishell> "
 

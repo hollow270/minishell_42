@@ -6,13 +6,31 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:05:26 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/18 17:06:45 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:23:12 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../inc/execution.h"
 
-int	compare(char *line, char *delimiter)
+void	ft_putchar_fd(char c, int fd)
+{
+	if (fd < 0)
+		return ;
+	write (fd, &c, 1);
+}
+
+void	ft_putstr_fd(char *s, int fd)
+{
+	if (s == NULL || fd < 0)
+		return ;
+	while (*s != '\0')
+	{
+		ft_putchar_fd(*s, fd);
+		s++;
+	}
+}
+
+static int	compare(char *line, char *delimiter)
 {
 	int	i;
 
@@ -26,7 +44,7 @@ int	compare(char *line, char *delimiter)
 	return (1);
 }
 
-int	handle_heredoc(char *delimiter)
+static int	handle_heredoc(char *delimiter)
 {
 	char	*line;
 	int		temp_fd;
@@ -55,7 +73,7 @@ int	handle_heredoc(char *delimiter)
 	return(close(temp_fd), 0);
 }
 
-int	open_with_mode(char *filename, int mode)
+static int	open_with_mode(char *filename, int mode)
 {
 	int fd;
 	
@@ -65,14 +83,14 @@ int	open_with_mode(char *filename, int mode)
 		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (mode == 3)
 		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	else
-		return (-1);
+	// else
+	// 	return (-1);
 	if (fd == -1)
 		perror(filename);
 	return (fd);
 }
 
-int	get_fd_type(int token_type)
+static int	get_fd_type(int token_type)
 {
 	if (token_type == TOKEN_RED_IN)
 		return (STDIN_FILENO);
@@ -98,11 +116,11 @@ int	apply_redirections(t_redirect *red)
 	{
 		fd = open_with_mode(red->file, mode);
 		if (fd == -1)
-			return (1);
+			exit (1);
 		dup2(fd, get_fd_type(red->type));
 		close(fd);
 	}
-	if(mode == 2 || mode == 3)
-		return (2);
+	// if(mode == 2 || mode == 3)
+	// 	return (2);
 	return (0);
 }
