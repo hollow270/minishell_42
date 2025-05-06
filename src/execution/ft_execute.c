@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/05 16:01:40 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:40:37 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,29 @@ static int	exec_builtin(char **cmd, t_env *env)
 static void	setup_redirections(t_cmd *cmd)
 {
 	t_redirect	*r;
+	t_redirect	*checker;
+	int			hdoc_count;
+	int			hdoc_index;
 
+	hdoc_count = 0;
+	hdoc_index = 0;
+	checker = cmd->s_redirect;
+	while (checker)
+	{
+		if (checker->type == TOKEN_HDOC)
+			hdoc_count++;
+		checker = checker->next;
+	}
 	r = cmd->s_redirect;
 	while (r)
 	{
-		apply_redirections(r);
+		if (r->type == TOKEN_HDOC)
+		{
+			apply_redirections(r, hdoc_count - hdoc_index - 1);
+			hdoc_index++;
+		}
+		else
+			apply_redirections(r, 0);
 		r = r->next;
 	}
 }
