@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/06 13:40:37 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/06 18:47:54 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,6 @@ void	ft_execute(t_cmd *cmd_list, t_minishell *env)
 	pid_t	last_pid;
 	int		status;
 	pid_t	pid;
-	static int	exit_status = 0;
 
 	prev_fd = -1;
 	last_pid = -1;

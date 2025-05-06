@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:05:26 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/06 13:59:07 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/06 18:32:02 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ static int	open_with_mode(char *filename, int mode)
 		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (mode == 3)
 		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	// else
+	// 	return (-1);
 	if (fd == -1)
 		perror(filename);
 	return (fd);
