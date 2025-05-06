@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 14:13:32 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/05 16:25:55 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/06 14:41:16 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,17 @@ void sort_and_display(t_env *env)
 	current = copy;
 	while (current)
 	{
-		if (current->value)
+		if ((current->name[0] == '_') && !current->name[1])
+		{
+			if (current->next)
+			{
+				current = current->next;
+				continue;
+			}
+			else
+				break ;
+		}
+		else if (current->value)
 			printf("declare -x %s=\"%s\"\n", current->name, current->value);
 		else
 			printf("declare -x %s\n", current->name);
@@ -271,6 +281,8 @@ int check_valid_input(char *cmd)
     
     if (!cmd[0])
         return (1);
+	if ((cmd[0] == '_') && (cmd[1] == '=' || !cmd[1]))
+		return (5);
     if ((cmd[0] != '_') && 
         (cmd[0] < 'a' || cmd[0] > 'z') && 
         (cmd[0] < 'A' || cmd[0] > 'Z'))
@@ -452,6 +464,11 @@ int	ft_export(char **cmd, t_env *env)
 	while (cmd[i])
 	{
 		flag = check_valid_input(cmd[i]);
+		if (flag == 5)
+		{
+			i++;
+			continue ;
+		}
 		if (flag == 1)
 		{
 			printf("export: `%s': not a valid identifier\n", cmd[i]);
