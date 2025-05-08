@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:11:28 by hnemmass          #+#    #+#             */
 /*   Updated: 2025/05/08 15:40:21 by hnemmass         ###   ########.fr       */
@@ -18,9 +18,9 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
 
 char	**env_to_array(t_env *env);
 void	ft_putchar_fd(char c, int fd);
