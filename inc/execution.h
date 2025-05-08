@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:11:28 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/07 17:29:31 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:28:36 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	**ft_split_2(char const *s, char c);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(char *s);
 int		apply_redirections(t_redirect *red, int i);
-int		ft_cd(char **cmd, t_env *env);
+int		ft_cd(char **cmd, t_env *env, t_minishell *mini);
 int		ft_echo(char **cmd);
 int		ft_env(t_env *env);
 int		ft_export(char **cmd, t_env *env);
