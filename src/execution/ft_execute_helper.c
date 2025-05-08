@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/05 16:29:21 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:18:31 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,24 @@ char	**ft_split_2(char const *s, char c)
 // 	}
 // }
 
+static void check_cwd(char **cmd, char **env_array)
+{
+	char *temp;
+	
+	temp = getcwd(NULL, 0);
+	if (!temp)
+		return ;
+	temp = ft_strjoin(temp, "/");
+	temp = ft_strjoin_free(temp, cmd[0]);
+	if (access(temp, F_OK | X_OK) == 0)
+	{
+		execve(temp, cmd, env_array);
+		free(temp);
+		exit(0);
+	}
+	free(temp);
+}
+
 static void	find_cmd_path(char **path, char **cmd, char **env_array)
 {
 	char	*temp;
@@ -175,13 +193,13 @@ static void	find_cmd_path(char **path, char **cmd, char **env_array)
 		{
 			execve(temp, cmd, env_array);
 			free(temp);
-			exit(127);
+			exit(0);
 		}
 		free(temp);
 	}
 	ft_putstr_fd(cmd[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
-	_exit(127);
+	exit(127);
 }
 char	*make_path(t_env *env)
 {
@@ -211,7 +229,10 @@ void	exec_cmd(char **cmd, t_env *env)
 	}
 	tmp_path = make_path(env);
 	if (!tmp_path)
+	{
+		check_cwd(cmd, env_array);
 		return (printf("Error: PATH not found in environment\n"), exit(127));
+	}
 	path = ft_split_2(tmp_path, ':');
 	if (!path)
 	{

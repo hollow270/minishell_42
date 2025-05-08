@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/08 13:27:50 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/08 15:38:48 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static int	exec_builtin(char **cmd, t_minishell *minishell)
 	else if (ft_strcmp(cmd[0], "export") == 0)
 		return (ft_export(cmd, minishell->s_env));
 	else if (ft_strcmp(cmd[0], "pwd") == 0)
-		return (ft_pwd());
+		return (ft_pwd(minishell));
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 		return (ft_unset(cmd, minishell->s_env));
 	else if (ft_strcmp(cmd[0], "exit") == 0)
