@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/03 18:53:06 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/05 16:16:14 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ static t_status	minishell(t_minishell **s_minishell)
 	//s_ms->s_cmd = parse(s_ms->s_tokens);
 	//print_cmds(s_ms->s_cmd);
 	//print_tokens(s_ms->s_tokens);
-	print_cmd_structure(s_ms->s_cmd);
+	// print_cmd_structure(s_ms->s_cmd);
+	ft_execute(s_ms->s_cmd, s_ms);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
 	return (STATUS_SUCCESS);

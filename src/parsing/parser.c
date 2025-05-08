@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/03 19:14:59 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/05 16:41:05 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,9 +248,6 @@ static void	free_argv(char **argv)
 	int	i;
 
 	i = 0;
-	while (argv[i])
-		printf("[%s]\n", argv[i++]);
-		i = 0;
 	while (argv[i])
 		free(argv[i++]);
 	//free(argv);
