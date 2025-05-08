@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/05 16:16:14 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:36:27 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int main(int arc, char **argv, char **env)
 
 	(void)arc;
 	(void)argv;
+	if (!isatty(STDIN_FILENO))
+    	exit (1);
 	s_minishell = init_minishell(env, &e_status);
 	if (!s_minishell)
 		return (e_status);
