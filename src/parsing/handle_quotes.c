@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/04 18:54:50 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/09 17:13:08 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static t_quotes		identify_quotes(char quote);
 static int			count_substrings(char *s);
 static char			*join_substrings(t_substring *head);
 static void			split_and_insert_tokens(t_token **head, t_token *node, t_token *prv);
+static void 		change_tabs(char *line);
 static void			free_split(char **split);
 
 void	handle_quotes(t_token *s_tokens, t_env *s_env)
@@ -48,9 +49,13 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env)
 			node->value = scan_string(node->value, s_env);
 			if (old_value != NULL)
 				free(old_value);
+			if ((ft_strchr(node->value, ' ') || ft_strchr(node->value, '\t'))
+				&& ft_strcmp("export", prv->value)  == 0 && !ft_strchr(node->value, '='))
+				split_and_insert_tokens(&s_tokens, node, prv);
+			else if ((ft_strchr(node->value, ' ') || ft_strchr(node->value, '\t'))
+				&& ft_strcmp("export", prv->value) != 0)
+				split_and_insert_tokens(&s_tokens, node, prv);
 		}
-		if (ft_strchr(node->value, ' ') && ft_strcmp("export", prv->value) != 0)
-			split_and_insert_tokens(&s_tokens, node, prv);
 		prv = node;
 		node = node->next;
 	}
@@ -86,14 +91,14 @@ static char	*remove_quotes(char *s, t_env *s_env)
 	if (!list)
 		return (NULL);
 	t_substring	*node = list;
-	while (node)
+	/*while (node)
 	{
 		printf("[%s] --> %d\n", node->str, node->type);
 		node = node->next;
-	}
+	}*/
 	expand_variables(&list, s_env);
 	ret = join_substrings(list);
-	printf("[%s]\n", ret);
+	//printf("[%s]\n", ret);
 	/*free_substrings(list);
 	if (!ret)
 		return (NULL);*/
@@ -252,6 +257,7 @@ static void	split_and_insert_tokens(t_token **head, t_token *node, t_token *prv)
 	t_token	*next_node;
 	int		i;
 
+	change_tabs(node->value);
 	split_words = ft_split(node->value, " ");
 	if (!split_words)
 		return ;
@@ -272,6 +278,19 @@ static void	split_and_insert_tokens(t_token **head, t_token *node, t_token *prv)
 	}
 	node->next = NULL;
 	free_split(split_words);
+}
+
+static void change_tabs(char *line)
+{
+    int i;
+
+    i = 0;
+    while (line[i])
+    {
+        if (line[i] == '\t')
+            line[i] = ' ';
+        i++;
+    }
 }
 
 static void	free_split(char **split)

@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 14:16:38 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/04/29 13:51:44 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/06 17:33:21 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,20 +122,20 @@ static int	change_pwd(char *path, t_env *env)
 {
 	char	*cwd;
 	char	*old_pwd;
-	int		exitstatus;
 
-	exitstatus = 0;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		exitstatus = 1;
-		perror("getcwd:");
+		printf("cd: error retrieving current directory: getcwd: ");
+		printf("cannot access parent directories: No such file or directory\n");
+		cwd = ft_strjoin(search_for_dir(env, "PWD"), "/");
+		cwd = ft_strjoin(cwd, path);
 	}
 	old_pwd = search_for_dir(env, "PWD");
 	update_oldpwd(env, old_pwd);
 	update_pwd(env, cwd);
 	free(cwd);
-	return (exitstatus);
+	return (0);
 }
 
 int	ft_cd(char **cmd, t_env *env)
@@ -157,7 +157,7 @@ int	ft_cd(char **cmd, t_env *env)
 	if (chdir(path) == -1)
 		return (perror("cd"), 1);
 	if (change_pwd(path, env))
-		return (perror("cd"), 1);
+		return (1);
 	return (0);
 }
 

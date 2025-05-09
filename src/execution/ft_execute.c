@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/02 11:24:50 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/06 18:47:54 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,18 +75,34 @@ static int	exec_builtin(char **cmd, t_env *env)
 		return (ft_unset(cmd, env));
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 		exit(0);
-	else
-		return (1);
 }
 
 static void	setup_redirections(t_cmd *cmd)
 {
 	t_redirect	*r;
+	t_redirect	*checker;
+	int			hdoc_count;
+	int			hdoc_index;
 
+	hdoc_count = 0;
+	hdoc_index = 0;
+	checker = cmd->s_redirect;
+	while (checker)
+	{
+		if (checker->type == TOKEN_HDOC)
+			hdoc_count++;
+		checker = checker->next;
+	}
 	r = cmd->s_redirect;
 	while (r)
 	{
-		apply_redirections(r);
+		if (r->type == TOKEN_HDOC)
+		{
+			apply_redirections(r, hdoc_count - hdoc_index - 1);
+			hdoc_index++;
+		}
+		else
+			apply_redirections(r, 0);
 		r = r->next;
 	}
 }
@@ -94,9 +110,6 @@ static void	setup_redirections(t_cmd *cmd)
 static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd, 
 		int is_last, t_minishell *env)
 {
-	int exit_status;
-	
-	exit_status = 0;
 	if (prev_fd != -1)
 	{
 		dup2(prev_fd, STDIN_FILENO);
@@ -111,8 +124,8 @@ static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd,
 	setup_redirections(cmd);
 	if (cmd->is_builtin)
 	{
-		exit_status = exec_builtin(cmd->argv, env->s_env);
-		exit(exit_status);
+		env->exit_status = exec_builtin(cmd->argv, env->s_env);
+		exit (env->exit_status);
 	}
 	else
 		exec_cmd(cmd->argv, env->s_env);
@@ -211,7 +224,6 @@ void	ft_execute(t_cmd *cmd_list, t_minishell *env)
 	pid_t	last_pid;
 	int		status;
 	pid_t	pid;
-	static int	exit_status = 0;
 
 	prev_fd = -1;
 	last_pid = -1;
