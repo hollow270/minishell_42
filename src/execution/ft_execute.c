@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/06 18:47:54 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/08 15:38:48 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,22 +59,23 @@ char	**env_to_array(t_env *env)
 	return (env_array);
 }
 
-static int	exec_builtin(char **cmd, t_env *env)
+static int	exec_builtin(char **cmd, t_minishell *minishell)
 {
 	if (ft_strcmp(cmd[0], "cd") == 0)
-		return (ft_cd(cmd, env));
+		return (ft_cd(cmd, minishell->s_env, minishell));
 	else if (ft_strcmp(cmd[0], "echo") == 0)
 		return (ft_echo(cmd));
 	else if (ft_strcmp(cmd[0], "env") == 0)
-		return (ft_env(env));
+		return (ft_env(minishell->s_env));
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		return (ft_export(cmd, env));
+		return (ft_export(cmd, minishell->s_env));
 	else if (ft_strcmp(cmd[0], "pwd") == 0)
-		return (ft_pwd());
+		return (ft_pwd(minishell));
 	else if (ft_strcmp(cmd[0], "unset") == 0)
-		return (ft_unset(cmd, env));
+		return (ft_unset(cmd, minishell->s_env));
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 		exit(0);
+	return (1);
 }
 
 static void	setup_redirections(t_cmd *cmd)
@@ -124,7 +125,7 @@ static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd,
 	setup_redirections(cmd);
 	if (cmd->is_builtin)
 	{
-		env->exit_status = exec_builtin(cmd->argv, env->s_env);
+		env->exit_status = exec_builtin(cmd->argv, env);
 		exit (env->exit_status);
 	}
 	else
@@ -186,11 +187,24 @@ static pid_t	handle_last_cmd(t_cmd *cmd, t_minishell *env, int prev_fd)
 static void	ft_execute_commands(t_cmd *cmd, t_minishell *env, 
 		int prev_fd, pid_t *last_pid)
 {
+	int	i;
+
+	i = 0;
 	while (cmd->next)
 	{
+		if (ft_strcmp(cmd->argv[0], "./minishell") == 0)
+		{
+			if (i == 0)
+				ft_putstr_fd("can't process minishell inside pipe\n", 1);
+			i++;
+			cmd = cmd->next;
+			continue ;
+		}
 		process_intermediate_cmds(cmd, env, &prev_fd);
 		cmd = cmd->next;
 	}
+	if (ft_strcmp(cmd->argv[0], "./minishell") == 0)
+		return ;
 	*last_pid = handle_last_cmd(cmd, env, prev_fd);
 	if (prev_fd != -1)
 		close(prev_fd);
@@ -204,7 +218,7 @@ static pid_t	execute_single_cmd(t_cmd *cmd, t_minishell *env)
 	if (cmd->is_builtin)
 	{
 		setup_redirections(cmd);
-		env->exit_status = exec_builtin(cmd->argv, env->s_env);
+		env->exit_status = exec_builtin(cmd->argv, env);
 		return (-1);
 	}
 	pid = fork();

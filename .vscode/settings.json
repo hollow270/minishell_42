@@ -1,11 +1,17 @@
 {
   "files.associations": {
-    "structs.h": "c",
-    "minishell.h": "c",
-    "readline.h": "c",
-    "tokenizer.h": "c",
-    "environment.h": "c"
-  },
+	"readline.h": "c",
+	"tokenizer.h": "c",
+	"environment.h": "c",
+	"structs.h": "c",
+	"unistd.h": "c",
+	"minishell.h": "c",
+	"history.h": "c",
+	"fcntl.h": "c",
+	"execution.h": "c",
+	"wait.h": "c",
+	"get_next_line.h": "c"
+},
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
   "C_Cpp_Runner.debuggerPath": "gdb",

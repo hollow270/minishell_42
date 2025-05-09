@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
 /*   Updated: 2025/05/08 18:44:10 by yhajbi           ###   ########.fr       */
@@ -29,6 +29,8 @@ int main(int arc, char **argv, char **env)
 
 	(void)arc;
 	(void)argv;
+	if (!isatty(STDIN_FILENO))
+    	exit (1);
 	s_minishell = init_minishell(env, &e_status);
 	if (!s_minishell)
 		return (e_status);
