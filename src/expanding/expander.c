@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/09 15:29:42 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/09 18:49:17 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	is_delimiter(char c);
 static int	is_num(char c);
 static char	*str_append_char(char *s, char c);
 
-void	expand_variables(t_substring **head, t_env *s_env)
+void	expand_variables(t_substring **head, t_env *s_env, int exit_status)
 {
 	t_substring	*node;
 	char		*old_value;
@@ -33,7 +33,7 @@ void	expand_variables(t_substring **head, t_env *s_env)
 		old_value = node->str;
 		if (has_var(node->str) && (node->type == DOUBLE_QUOTED || node->type == UNQUOTED))
 		{
-			node->str = scan_string(node->str, s_env);
+			node->str = scan_string(node->str, s_env, exit_status);
 			if (old_value != NULL)
 				free(old_value);
 		}
@@ -41,7 +41,7 @@ void	expand_variables(t_substring **head, t_env *s_env)
 	}
 }
 
-char	*scan_string(char *s, t_env *s_env)
+char	*scan_string(char *s, t_env *s_env, int exit_status)
 {
 	int		i;
 	char	*ret;
@@ -55,6 +55,11 @@ char	*scan_string(char *s, t_env *s_env)
 			if (s[i + 1] == '$')
 			{
 				ret = str_append_str(ret, "$$");
+				i += 2;
+			}
+			else if (s[i + 1] == '?')
+			{
+				ret = str_append_str(ret, ft_itoa(exit_status));
 				i += 2;
 			}
 			else if (is_num(s[i + 1]))
@@ -164,7 +169,7 @@ static int	is_delimiter(char c)
 		|| c == '+' || c == '-' || c == '.'
 		|| c == '[' || c == ']' || c == '{'
 		|| c == '}' || c == '(' || c == ')'
-		|| c == '=' || is_num(c));
+		|| c == '=' || is_num(c) || c == ',');
 	/*return (c == ' ' || c == '\'' || c == '\"'
 		|| c == '$' || c == '\0');*/
 }

@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/09 17:13:08 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/09 18:21:45 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 //static char		*remove_quotes(char *s);
 //static int		count_quotes(char *s);
 //static int			has_quotes(char *s);
-static char			*remove_quotes(char *s, t_env *s_env);
+static char			*remove_quotes(char *s, t_env *s_env, int exit_status);
 static int			is_word(t_tokens_type type);
 static t_substring	*split_quotes(char *s);
 static void			add_substring(t_substring **head, char *s, char quote);
@@ -26,7 +26,7 @@ static void			split_and_insert_tokens(t_token **head, t_token *node, t_token *pr
 static void 		change_tabs(char *line);
 static void			free_split(char **split);
 
-void	handle_quotes(t_token *s_tokens, t_env *s_env)
+void	handle_quotes(t_token *s_tokens, t_env *s_env, int exit_status)
 {
 	t_token	*node;
 	t_token	*prv;
@@ -40,13 +40,13 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env)
 		old_value = node->value;
 		if (has_quotes(node->value))
 		{
-			node->value = remove_quotes(node->value, s_env);
+			node->value = remove_quotes(node->value, s_env, exit_status);
 			if (old_value != NULL)
 				free(old_value);
 		}
 		else if (!has_quotes(node->value) && is_word(node->type))
 		{
-			node->value = scan_string(node->value, s_env);
+			node->value = scan_string(node->value, s_env, exit_status);
 			if (old_value != NULL)
 				free(old_value);
 			if ((ft_strchr(node->value, ' ') || ft_strchr(node->value, '\t'))
@@ -82,7 +82,7 @@ static int	is_word(t_tokens_type type)
 		|| type == TOKEN_FILE);
 }
 
-static char	*remove_quotes(char *s, t_env *s_env)
+static char	*remove_quotes(char *s, t_env *s_env, int exit_status)
 {
 	t_substring	*list;
 	char		*ret;
@@ -96,7 +96,7 @@ static char	*remove_quotes(char *s, t_env *s_env)
 		printf("[%s] --> %d\n", node->str, node->type);
 		node = node->next;
 	}*/
-	expand_variables(&list, s_env);
+	expand_variables(&list, s_env, exit_status);
 	ret = join_substrings(list);
 	//printf("[%s]\n", ret);
 	/*free_substrings(list);

@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:57:19 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/08 18:30:24 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/09 18:20:02 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ int		is_arg(t_tokens_type type);
 int		is_redirection(t_tokens_type type);
 int		is_file_eof(t_tokens_type type);
 char	*ft_strchr(const char *s, int c);
+char	*ft_itoa(int n);
 
 #endif

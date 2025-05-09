@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/08 19:59:45 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/09 18:15:13 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_status	parse_command_line(t_minishell *s_minishell)
 	if (check_syntax(s_minishell->s_tokens) == STATUS_SYNTAX_ERR)
 		return (printf("minishell: syntax error\n"), STATUS_FAILURE);
 	process_tokens(s_minishell->s_tokens);
-	handle_quotes(s_minishell->s_tokens, s_minishell->s_env);
+	handle_quotes(s_minishell->s_tokens, s_minishell->s_env, s_minishell->exit_status);
 	//expand_unquoted(s_minishell->s_tokens, s_minishell->s_env);
 	s_minishell->s_cmd = parse_tokens(s_minishell->s_tokens);
 	if (!s_minishell->s_cmd)
