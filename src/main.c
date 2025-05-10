@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/08 18:44:10 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/10 14:39:51 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	if (parse_command_line(s_ms) != STATUS_FAILURE)
 		ft_execute(s_ms->s_cmd, s_ms);
 	//s_ms->s_cmd = parse(s_ms->s_tokens);
-	//print_cmds(s_ms->s_cmd);
+	// print_cmds(s_ms->s_cmd);
 	//print_tokens(s_ms->s_tokens);
 	// print_cmd_structure(s_ms->s_cmd);
 	free(s_ms->cmdline);
