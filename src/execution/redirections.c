@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:05:26 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/06 18:32:02 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:35:16 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	compare(char *line, char *delimiter)
 	return (1);
 }
 
-static int	handle_heredoc(char *delimiter, int position)
+static int	handle_heredoc(char *delimiter, int position, t_minishell *mini)
 {
 	char	*line;
 	int		temp_fd;
@@ -61,6 +61,7 @@ static int	handle_heredoc(char *delimiter, int position)
 			free(line);
 			break;
 		}
+		line = scan_string(line, mini->s_env, mini->exit_status);
 		ft_putstr_fd(line, temp_fd);
 		free(line);
 	}
@@ -101,7 +102,7 @@ static int	get_fd_type(int token_type)
 	return (STDOUT_FILENO);
 }
 
-int	apply_redirections(t_redirect *red, int hdoc_position)
+int	apply_redirections(t_redirect *red, int hdoc_position, t_minishell *mini)
 {
 	int fd;
 	int mode;
@@ -114,7 +115,7 @@ int	apply_redirections(t_redirect *red, int hdoc_position)
 		mode = 3;
 	else if (red->type == TOKEN_HDOC)
 	{
-		return (handle_heredoc(red->file, hdoc_position));
+		return (handle_heredoc(red->file, hdoc_position, mini));
 	}
 	else
 		return (0);

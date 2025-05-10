@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/08 15:38:48 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:34:25 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static int	exec_builtin(char **cmd, t_minishell *minishell)
 	return (1);
 }
 
-static void	setup_redirections(t_cmd *cmd)
+static void	setup_redirections(t_cmd *cmd, t_minishell *mini)
 {
 	t_redirect	*r;
 	t_redirect	*checker;
@@ -99,11 +99,11 @@ static void	setup_redirections(t_cmd *cmd)
 	{
 		if (r->type == TOKEN_HDOC)
 		{
-			apply_redirections(r, hdoc_count - hdoc_index - 1);
+			apply_redirections(r, hdoc_count - hdoc_index - 1, mini);
 			hdoc_index++;
 		}
 		else
-			apply_redirections(r, 0);
+			apply_redirections(r, 0, mini);
 		r = r->next;
 	}
 }
@@ -122,7 +122,7 @@ static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd,
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	setup_redirections(cmd);
+	setup_redirections(cmd, env);
 	if (cmd->is_builtin)
 	{
 		env->exit_status = exec_builtin(cmd->argv, env);
@@ -217,7 +217,7 @@ static pid_t	execute_single_cmd(t_cmd *cmd, t_minishell *env)
 
 	if (cmd->is_builtin)
 	{
-		setup_redirections(cmd);
+		setup_redirections(cmd, env);
 		env->exit_status = exec_builtin(cmd->argv, env);
 		return (-1);
 	}
