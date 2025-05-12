@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/10 15:39:13 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/11 13:21:09 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,8 @@ char	**ft_split_2(char const *s, char c)
 // 	}
 // }
 
+#include <errno.h>
+
 static void check_cwd(char **cmd, char **env_array)
 {
 	char *temp;
@@ -178,7 +180,12 @@ static void check_cwd(char **cmd, char **env_array)
 	}
 	perror(cmd[0]);
 	free(temp);
-	exit (127);
+	if (errno == ENOENT)
+        exit (127);
+    else if (errno == EACCES)
+        exit (126);
+    else
+        exit (127);
 }
 
 static void	find_cmd_path(char **path, char **cmd, char **env_array)
@@ -223,6 +230,8 @@ void	exec_cmd(char **cmd, t_env *env)
 	char	**path;
 	char	**env_array;
 
+	if (!cmd || !(*cmd))
+		return (exit(1));
 	env_array = env_to_array(env);
 	if (!env_array)
 	{
