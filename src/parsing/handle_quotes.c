@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/09 18:21:45 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/23 20:51:14 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,6 +255,7 @@ static void	split_and_insert_tokens(t_token **head, t_token *node, t_token *prv)
 	char	**split_words;
 	t_token	*new_token;
 	t_token	*next_node;
+	t_token	*rest;
 	int		i;
 
 	change_tabs(node->value);
@@ -263,6 +264,7 @@ static void	split_and_insert_tokens(t_token **head, t_token *node, t_token *prv)
 		return ;
 	free(node->value);
 	node->value = ft_strdup(split_words[0]);
+	rest = node->next;
 	i = 1;
 	while (split_words[i])
 	{
@@ -276,7 +278,7 @@ static void	split_and_insert_tokens(t_token **head, t_token *node, t_token *prv)
 		node = new_token;
 		i++;
 	}
-	node->next = NULL;
+	node->next = rest;
 	free_split(split_words);
 }
 

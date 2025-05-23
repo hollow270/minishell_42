@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:12:57 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/08 18:31:18 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/23 17:28:03 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	free_commands(t_minishell *s_minishell)
 	t_cmd	*node;
 	t_cmd	*cup;
 
+	if (!s_minishell->s_cmd)
+		return ;
 	node = s_minishell->s_cmd;
 	cup = NULL;
 	while (node)
@@ -63,7 +65,7 @@ static void	free_argv(char **argv)
 	int	i;
 
 	i = 0;
-	while (argv[i])
+	while (argv && argv[i])
 		free(argv[i++]);
 }
 

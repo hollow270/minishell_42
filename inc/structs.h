@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:03:11 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/07 17:57:22 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/23 16:39:30 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct	s_redirect
 {
 	t_tokens_type		type;
 	char				*file;
+	int					heredoc_fd;
 	struct s_redirect	*next;
 }						t_redirect;
 

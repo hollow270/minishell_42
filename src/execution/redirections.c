@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:05:26 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/06 18:32:02 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/23 16:56:54 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/execution.h"
+#include "../../inc/minishell.h"
 
 void	ft_putchar_fd(char c, int fd)
 {
