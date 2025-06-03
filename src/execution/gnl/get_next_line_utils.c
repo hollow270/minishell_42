@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 06:02:07 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/05 17:30:16 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/23 16:58:20 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
 #include "../../../inc/minishell.h"
+#include "../../../inc/get_next_line.h"
 
 size_t	ft_strlen_2(const char *s)
 {

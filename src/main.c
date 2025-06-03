@@ -3,22 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/11 16:29:35 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/05/23 16:40:31 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 static t_minishell	*init_minishell(char **env, t_status *e_status);
-static t_status	minishell(t_minishell **s_minishell);
-static void	print_env(t_env *env);
-static void	print_tokens(t_token *s_tokens);
-static char	*print_value(int v);
-static void	print_cmds(t_cmd *s_cmd);
-void print_cmd_structure(t_cmd *cmd_list);
+static t_status		minishell(t_minishell **s_minishell);
+static t_cmd		*create_cmd();
+static void			print_env(t_env *env);
+static void			print_tokens(t_token *s_tokens);
+static char			*print_value(int v);
+static void			print_cmds(t_cmd *s_cmd);
+void 				print_cmd_structure(t_cmd *cmd_list);
 
 /*			---------		MAIN		--------			*/
 
@@ -40,6 +41,8 @@ int main(int arc, char **argv, char **env)
 		if (e_status == STATUS_EXIT_CMD)
 			break ;
 	}
+	close(s_minishell->stdfd[0]);
+	close(s_minishell->stdfd[1]);
 	return (free_minishell(s_minishell), STATUS_SUCCESS);
 }
 
@@ -65,6 +68,7 @@ static t_status	minishell(t_minishell **s_minishell)
 {
 	t_minishell	*s_ms;
 
+	s_ms->s_cmd = create_cmd();
 	s_ms = *s_minishell;
 	s_ms->cmdline = readline(PROMPT);
 	if (!s_ms->cmdline)
@@ -89,6 +93,19 @@ static t_status	minishell(t_minishell **s_minishell)
 	return (STATUS_SUCCESS);
 }
 
+static t_cmd	*create_cmd(void)
+{
+	t_cmd	*new;
+
+	new = malloc(sizeof(t_cmd));
+	if (!new)
+		return (NULL);
+	new->argv = NULL;
+	new->is_builtin = 0;
+	new->s_redirect = NULL;
+	new->next = NULL;
+	return (new);
+}
 
 /*			--------		TESTING FUNCTIONS		--------			*/
 
