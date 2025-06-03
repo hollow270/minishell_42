@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/23 20:37:23 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/05/23 20:57:56 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ static int	ft_strlen_num(char *s)
 	int	i;
 
 	i = 0;
-	while (s[i] && (is_num(s[i])) || s[i] == '$')
+	while (s[i] && (is_num(s[i]) || s[i] == '$'))
 		i++;
 	return (i);
 }
