@@ -84,7 +84,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	if (parse_command_line(s_ms) != STATUS_FAILURE)
 		ft_execute(s_ms->s_cmd, s_ms);
 	//s_ms->s_cmd = parse(s_ms->s_tokens);
-	//print_cmds(s_ms->s_cmd);
+	// print_cmds(s_ms->s_cmd);
 	//print_tokens(s_ms->s_tokens);
 	// print_cmd_structure(s_ms->s_cmd);
 	free(s_ms->cmdline);

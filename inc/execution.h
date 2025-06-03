@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:11:28 by hnemmass          #+#    #+#             */
 /*   Updated: 2025/05/23 16:56:38 by yhajbi           ###   ########.fr       */
@@ -13,6 +13,7 @@
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
+# include "parsing.h"
 # include "structs.h"
 # include <unistd.h>
 # include <sys/types.h>
@@ -32,7 +33,7 @@ char	*get_next_line(int fd);
 char	**ft_split_2(char const *s, char c);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(char *s);
-int		apply_redirections(t_redirect *red, int i);
+int		apply_redirections(t_redirect *red, int i, t_minishell *mini, t_redirect *last_input);
 int		ft_cd(char **cmd, t_env *env, t_minishell *mini);
 int		ft_echo(char **cmd);
 int		ft_env(t_env *env);
