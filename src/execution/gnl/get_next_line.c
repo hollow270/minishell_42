@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 20:35:56 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/23 16:57:45 by yhajbi           ###   ########.fr       */
+/*   Updated: 2024/11/24 04:16:02 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../inc/get_next_line.h"
+#include "get_next_line.h"
 
 char	*get_next_line(int fd)
 {
