@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/14 15:56:37 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/14 16:36:38 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void				addlst_export_parse(t_export_parse **head, char	*new_frag);
 static void				split_after_expand(t_export_parse **head);
 static void				find_and_join_equal(t_export_parse **head);
 static void				join_three_nodes(t_export_parse *prv, t_export_parse *node, t_export_parse *next);
+static void				addlst_export_back(t_export_parse **head, t_export_parse **rest);
+static void				freelst_export(t_export_parse *node);
 static void				split_and_insert_expanded(t_export_parse **head, t_export_parse *node);
 static void				insert_expanded_in_tokens(t_token **start, t_export_parse *head);
 static char				*remove_quotes(char *s, t_env *s_env, int exit_status);
@@ -52,17 +54,15 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env, int exit_status)
 			export_flag = 1;
 		else if (node->type == TOKEN_PIPE)
 			export_flag = 0;
+		if (export_flag == 0)
+			split_and_insert_tokens(&s_tokens, node);
+		else if (ft_strcmp(node->value, "export") != 0)
+			handle_export_expanding(&s_tokens, node, prv, s_env, exit_status);
 		if (has_quotes(node->value))
 		{
 			node->value = remove_quotes(node->value, s_env, exit_status);
 			if (old_value != NULL)
 				free(old_value);
-		}
-		if (export_flag == 0)
-			split_and_insert_tokens(&s_tokens, node);
-		else
-		{
-			handle_export_expanding(&s_tokens, node, prv, s_env, exit_status);
 		}
 		if (!has_quotes(node->value) && is_word(node->type))
 		{
@@ -89,6 +89,8 @@ static void	handle_export_expanding(t_token **head, t_token *node, t_token *prv,
 	if (ft_strchr(node->value, '$') == NULL)
 		return ;
 	split = ft_split(node->value, "=");
+	if (ft_strchr(split[0], '$') == NULL)
+		return ;
 	exp_head = expand_export_fragments(split, s_env, exit_status);
 	split_after_expand(&exp_head);
 	find_and_join_equal(&exp_head);
@@ -103,11 +105,11 @@ static void	handle_export_expanding(t_token **head, t_token *node, t_token *prv,
 		printf("[%s]		|		was_expanded ==> [%d]\n", exp_head->fragment, exp_head->type);
 		exp_head = exp_head->next;
 	}*/
-	/*t_token *current = *head;
+	t_token *current = *head;
     while (current) {
         printf("Token: [%s] Type: %d\n", current->value, current->type);
         current = current->next;
-    }*/
+    }
 }
 
 static t_export_parse	*expand_export_fragments(char **split, t_env *s_env, int exit_status)
@@ -186,34 +188,79 @@ static void	find_and_join_equal(t_export_parse **head)
 	t_export_parse	*node;
 	t_export_parse	*next;
 	t_export_parse	*prv;
+	t_export_parse	*next2;
 
 	node = *head;
-	if (!node || !node->next)
-		return;
-	next = node->next->next;
+	next = node->next;
 	prv = node;
+	next2 = node->next->next;
 	while (node)
 	{
 		if (!(node->next))
 			break ;
-		next = node->next->next;
+		next = node->next;
 		if (ft_strcmp("=", node->fragment) == 0)
+		{
+			next2 = node->next->next;
 			join_three_nodes(prv, node, next);
+			node = next2;
+			continue ;
+		}
+		prv = node;
+		node = next;
+	}
+	node = *head;
+	next = node->next;
+	prv = node;
+	while (node->next)
+	{
+		next = node->next;
+		if (ft_strchr(next->fragment, '=') != NULL)
+		{
+			prv->next = next;
+			freelst_export(node);
+			//break ;
+		}
+		prv = node;
 		node = next;
 	}
 }
 
 static void	join_three_nodes(t_export_parse *prv, t_export_parse *node, t_export_parse *next)
 {
-	char	*new_frag;
-	
-	new_frag = malloc(sizeof(char) * (ft_strlen(prv->fragment)
-		+ ft_strlen(node->fragment) + ft_strlen(next->fragment) + 1));
-	ft_strlcpy(new_frag, prv->fragment, ft_strlen(prv->fragment));
-	ft_strlcpy(new_frag, node->fragment, ft_strlen(node->fragment));
-	ft_strlcpy(new_frag, next->fragment, ft_strlen(next->fragment));
-	new_frag[ft_strlen(prv->fragment) + ft_strlen(node->fragment) + ft_strlen(next->fragment)] = '\0';
-	printf("joined string = [%s]\n", new_frag);
+	t_export_parse	*rest;
+	char			*new_frag;
+	int				sz;
+
+	rest = next->next;
+	sz = ft_strlen(prv->fragment) + ft_strlen(node->fragment) + ft_strlen(next->fragment);
+	new_frag = malloc(sizeof(char) * (sz + 1));
+	ft_strlcpy(new_frag, prv->fragment, sz);
+	ft_strlcpy(new_frag + ft_strlen(prv->fragment), node->fragment, sz);
+	ft_strlcpy(new_frag + ft_strlen(prv->fragment) + ft_strlen(node->fragment), next->fragment, sz);
+	new_frag[sz] = '\0';
+	//printf("joined string = [%s]\n", new_frag);
+	prv->next = NULL;
+	addlst_export_parse(&prv, new_frag);
+	addlst_export_back(&prv, &rest);
+	freelst_export(node);
+	freelst_export(next);
+}
+
+static void	addlst_export_back(t_export_parse **head, t_export_parse **rest)
+{
+	t_export_parse	*node;
+
+	node = *head;
+	while (node->next)
+		node = node->next;
+	node->next = *rest;
+}
+
+static void	freelst_export(t_export_parse *node)
+{
+	free(node->fragment);
+	free(node);
 }
 
 static void	split_and_insert_expanded(t_export_parse **head, t_export_parse *node)
@@ -261,7 +308,7 @@ static void	insert_expanded_in_tokens(t_token **start, t_export_parse *head)
 
 	node = *start;
 	exp_node = head;
-	rest = node->next;
+	rest = node->next->next;
 	while (exp_node)
 	{
 		new_token = malloc(sizeof(t_token));
