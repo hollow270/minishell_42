@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:38:43 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/10 16:45:23 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/13 16:43:10 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ char	*ft_strdup(char *s)
 	char	*d_s;
 	char	*d;
 
+	//new
+	if (!s)
+		return (NULL);
 	d_s = (char *)malloc(ft_strlen(s) + 1);
 	if (!d_s)
 		return (NULL);
