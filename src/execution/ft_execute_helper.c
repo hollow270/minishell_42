@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/08 16:18:31 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:41:00 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,8 @@ char	**ft_split_2(char const *s, char c)
 // 	}
 // }
 
+#include <errno.h>
+
 static void check_cwd(char **cmd, char **env_array)
 {
 	char *temp;
@@ -171,12 +173,13 @@ static void check_cwd(char **cmd, char **env_array)
 	temp = ft_strjoin(temp, "/");
 	temp = ft_strjoin_free(temp, cmd[0]);
 	if (access(temp, F_OK | X_OK) == 0)
-	{
 		execve(temp, cmd, env_array);
-		free(temp);
-		exit(0);
-	}
+	perror(cmd[0]);
 	free(temp);
+    if (errno == EACCES)
+        exit (126);
+    else
+        exit (127);
 }
 
 static void	find_cmd_path(char **path, char **cmd, char **env_array)
@@ -221,6 +224,8 @@ void	exec_cmd(char **cmd, t_env *env)
 	char	**path;
 	char	**env_array;
 
+	if (!cmd || !(*cmd))
+		exit(0);
 	env_array = env_to_array(env);
 	if (!env_array)
 	{
@@ -243,7 +248,7 @@ void	exec_cmd(char **cmd, t_env *env)
 	{
 		if (access(cmd[0], F_OK | X_OK) == 0)
 			execve(cmd[0], cmd, env_array);
-		printf("%s: command not found\n", cmd[0]);
+		check_cwd(cmd, env_array);
 	}
 	else
 		find_cmd_path(path, cmd, env_array);
