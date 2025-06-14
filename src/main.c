@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/13 17:27:32 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/14 16:04:59 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	// s_ms->s_cmd = parse(s_ms->s_tokens);
 	// print_cmds(s_ms->s_cmd);
 	//print_tokens(s_ms->s_tokens);
-	// print_cmd_structure(s_ms->s_cmd);
+	print_cmd_structure(s_ms->s_cmd);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
 	free_commands(s_ms);

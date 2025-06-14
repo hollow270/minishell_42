@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/13 16:42:59 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/14 15:56:37 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,8 @@ static void	find_and_join_equal(t_export_parse **head)
 	t_export_parse	*prv;
 
 	node = *head;
+	if (!node || !node->next)
+		return;
 	next = node->next->next;
 	prv = node;
 	while (node)
