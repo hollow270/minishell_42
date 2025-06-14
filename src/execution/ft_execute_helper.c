@@ -182,7 +182,7 @@ static void check_cwd(char **cmd, char **env_array)
         exit (127);
 }
 
-static void	find_cmd_path(char **path, char **cmd, char **env_array)
+static void	find_cmd_path(char **path, char **cmd, char **env_array, t_minishell *mini)
 {
 	char	*temp;
 	int		i;
@@ -200,8 +200,9 @@ static void	find_cmd_path(char **path, char **cmd, char **env_array)
 		}
 		free(temp);
 	}
-	ft_putstr_fd(cmd[0], 2);
-	ft_putstr_fd(": command not found\n", 2);
+	dup2(mini->stdfd[1], STDOUT_FILENO);
+	printf("%s", cmd[0]);
+	printf(": command not found\n");
 	exit(127);
 }
 char	*make_path(t_env *env)
@@ -218,7 +219,7 @@ char	*make_path(t_env *env)
 	return(NULL);
 }
 
-void	exec_cmd(char **cmd, t_env *env)
+void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 {
 	char	*tmp_path;
 	char	**path;
@@ -251,7 +252,7 @@ void	exec_cmd(char **cmd, t_env *env)
 		check_cwd(cmd, env_array);
 	}
 	else
-		find_cmd_path(path, cmd, env_array);
+		find_cmd_path(path, cmd, env_array, mini);
 	free_split_2(path);
 	exit(127);
 }

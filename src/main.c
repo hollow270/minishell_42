@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
 /*   Updated: 2025/06/14 16:28:23 by yhajbi           ###   ########.fr       */
@@ -93,7 +93,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	if (!s_ms->cmdline)
 	{
 		printf("exit\n");
-		exit(130);
+		exit(s_ms->exit_status);
 	}
 	if (signal_received == 130)
 	{

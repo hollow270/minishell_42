@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
 /*   Updated: 2025/06/14 16:36:38 by yhajbi           ###   ########.fr       */
@@ -276,6 +276,9 @@ static void	split_and_insert_expanded(t_export_parse **head, t_export_parse *nod
 		return ;
 	free(node->fragment);
 	node->fragment = ft_strdup(split_words[0]);
+	//new
+	if (!node->fragment)
+		return ;
 	node->type = WAS_NOT_EXPANDED;
 	rest = node->next;
 	i = 1;
@@ -518,6 +521,9 @@ static void	split_and_insert_tokens(t_token **head, t_token *node)
 	t_token	*rest;
 	int		i;
 
+	//new
+	if (ft_strcmp(node->value, "") == 0)
+		return ;
 	change_tabs(node->value);
 	split_words = ft_split(node->value, " ");
 	if (!split_words)

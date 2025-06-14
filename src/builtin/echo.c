@@ -6,11 +6,31 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 17:02:42 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/05 15:21:52 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:41:37 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/execution.h"
+
+int	compare_argument(char *str)
+{
+	int	i;
+
+	i = 0;
+	while(str[i])
+	{
+		if (str[i] == '-')
+		{
+			i++;
+			while (str[i] && str[i] == 'n')
+				i++;
+			if (!str[i])
+				return (0);
+			return (1);
+		}
+		return (1);
+	}
+}
 
 int	ft_echo(char **cmd)
 {
@@ -20,13 +40,13 @@ int	ft_echo(char **cmd)
 	i = 1;
 	if (!cmd[1])
 		return (printf("\n"), 0);
-	if ((ft_strcmp(cmd[1], "-n") == 0) && !cmd[2])
+	if ((compare_argument(cmd[i]) == 0 && !cmd[2]))
 		return (0);
 	current = cmd;
-	if (ft_strcmp(current[i], "-n") == 0)
+	if (compare_argument(current[i]) == 0)
 	{
 		i++;
-		while (ft_strcmp(current[i], "-n") == 0)
+		while (compare_argument(current[i]) == 0)
 			i++;
 		while (current[i + 1])
 		{

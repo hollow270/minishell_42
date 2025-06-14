@@ -45,7 +45,7 @@ int		ft_export(char **cmd, t_env *env);
 int		ft_pwd(t_minishell *mini);
 int		ft_unset(char **cmd, t_env **env);
 void	ft_execute(t_cmd *data, t_minishell *env);
-void	exec_cmd(char **cmd, t_env *env);
+void	exec_cmd(char **cmd, t_env *env, t_minishell *mini);
 char	*make_path(t_env *env);
 
 #endif

@@ -418,7 +418,7 @@ static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd,
 		exit (env->exit_status);
 	}
 	else
-		exec_cmd(cmd->argv, env->s_env);
+		exec_cmd(cmd->argv, env->s_env, env);
 	perror(cmd->argv[0]);
 	exit(1);
 }
