@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/23 16:40:31 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/13 17:27:32 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+int signal_received = 0;
 
 static t_minishell	*init_minishell(char **env, t_status *e_status);
 static t_status		minishell(t_minishell **s_minishell);
@@ -64,15 +66,40 @@ static t_minishell	*init_minishell(char **env, t_status *e_status)
 	return (s_minishell);
 }
 
+void	handle_int(int sig)
+{
+	signal_received = 130;
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	(void) sig;
+}
+
+void	check_signal(void)
+{
+	signal(SIGINT, handle_int);
+	signal(SIGQUIT, SIG_IGN);
+}
+
 static t_status	minishell(t_minishell **s_minishell)
 {
 	t_minishell	*s_ms;
 
 	s_ms->s_cmd = create_cmd();
 	s_ms = *s_minishell;
+	check_signal();
 	s_ms->cmdline = readline(PROMPT);
 	if (!s_ms->cmdline)
-		return (STATUS_FAILURE);
+	{
+		printf("exit\n");
+		exit(s_ms->exit_status);
+	}
+	if (signal_received == 130)
+	{
+		s_ms->exit_status = 130;
+		signal_received = 0;
+	}
 	if (ft_strcmp(s_ms->cmdline, "exit") == 0)
 	{
 		rl_clear_history();
@@ -83,7 +110,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
 	if (parse_command_line(s_ms) != STATUS_FAILURE)
 		ft_execute(s_ms->s_cmd, s_ms);
-	//s_ms->s_cmd = parse(s_ms->s_tokens);
+	// s_ms->s_cmd = parse(s_ms->s_tokens);
 	// print_cmds(s_ms->s_cmd);
 	//print_tokens(s_ms->s_tokens);
 	// print_cmd_structure(s_ms->s_cmd);

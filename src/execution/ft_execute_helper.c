@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/11 13:21:09 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/13 17:41:47 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,22 +173,16 @@ static void check_cwd(char **cmd, char **env_array)
 	temp = ft_strjoin(temp, "/");
 	temp = ft_strjoin_free(temp, cmd[0]);
 	if (access(temp, F_OK | X_OK) == 0)
-	{
 		execve(temp, cmd, env_array);
-		free(temp);
-		exit(0);
-	}
 	perror(cmd[0]);
 	free(temp);
-	if (errno == ENOENT)
-        exit (127);
-    else if (errno == EACCES)
+    if (errno == EACCES)
         exit (126);
     else
         exit (127);
 }
 
-static void	find_cmd_path(char **path, char **cmd, char **env_array)
+static void	find_cmd_path(char **path, char **cmd, char **env_array, t_minishell *mini)
 {
 	char	*temp;
 	int		i;
@@ -206,8 +200,9 @@ static void	find_cmd_path(char **path, char **cmd, char **env_array)
 		}
 		free(temp);
 	}
-	ft_putstr_fd(cmd[0], 2);
-	ft_putstr_fd(": command not found\n", 2);
+	dup2(mini->stdfd[1], STDOUT_FILENO);
+	printf("%s", cmd[0]);
+	printf(": command not found\n");
 	exit(127);
 }
 char	*make_path(t_env *env)
@@ -224,14 +219,14 @@ char	*make_path(t_env *env)
 	return(NULL);
 }
 
-void	exec_cmd(char **cmd, t_env *env)
+void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 {
 	char	*tmp_path;
 	char	**path;
 	char	**env_array;
 
 	if (!cmd || !(*cmd))
-		return (exit(1));
+		exit(0);
 	env_array = env_to_array(env);
 	if (!env_array)
 	{
@@ -257,7 +252,7 @@ void	exec_cmd(char **cmd, t_env *env)
 		check_cwd(cmd, env_array);
 	}
 	else
-		find_cmd_path(path, cmd, env_array);
+		find_cmd_path(path, cmd, env_array, mini);
 	free_split_2(path);
 	exit(127);
 }
