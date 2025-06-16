@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/23 20:57:56 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/16 16:49:30 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	ft_strlen_var(char *s);
 static int	is_delimiter2(char c);
 static int	is_delimiter(char c);
 static int	is_num(char c);
-static char	*str_append_char(char *s, char c);
+//char		*str_append_char(char *s, char c);
 
 void	expand_variables(t_substring **head, t_env *s_env, int exit_status)
 {
@@ -193,7 +193,7 @@ static int	is_num(char c)
 	return (c >= '0' && c <= '9');
 }
 
-static char	*str_append_char(char *s, char c)
+char	*str_append_char(char *s, char c)
 {
 	char	*new_str;
 	int		len;

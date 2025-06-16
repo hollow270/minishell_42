@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 19:32:07 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/09 18:18:02 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/16 16:48:53 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,6 @@ void		expand_variables(t_substring **head, t_env *s_env, int exit_status);
 char		*scan_string(char *s, t_env *s_env, int exit_status);
 char		*expand_split(char *s, t_env *s_env);
 void		expand_unquoted(t_token *s_tokens, t_env *s_env);
+char		*str_append_char(char *s, char c);
 
 #endif

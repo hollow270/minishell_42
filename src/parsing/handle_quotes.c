@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/16 16:15:23 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/16 17:58:03 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void				add_substring(t_substring **head, char *s, char quote);
 static t_quotes			identify_quotes(char quote);
 static int				count_substrings(char *s);
 static char				*join_substrings(t_substring *head);
+static char				*leave_outer_quotes(char *s);
 static void				split_and_insert_tokens(t_token **head, t_token *node);
 static void 			change_tabs(char *line);
 static void				free_split(char **split);
@@ -59,9 +60,15 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env, int exit_status)
 			split_and_insert_tokens(&s_tokens, node);
 		else if (ft_strcmp(node->value, "export") != 0)
 			prv = handle_export_expanding(&s_tokens, node, prv, s_env, exit_status);
-		if (has_quotes(node->value))
+		if (has_quotes(node->value) && node->type != TOKEN_EOF)
 		{
 			node->value = remove_quotes(node->value, s_env, exit_status);
+			if (old_value != NULL)
+				free(old_value);
+		}
+		else if (has_quotes(node->value) && node->type == TOKEN_EOF)
+		{
+			node->value = leave_outer_quotes(node->value);
 			if (old_value != NULL)
 				free(old_value);
 		}
@@ -503,6 +510,38 @@ static char	*join_substrings(t_substring *head)
 		if (!ret)
 			return (NULL);
 		node = node->next;
+	}
+	return (ret);
+}
+
+static char	*leave_outer_quotes(char *s)
+{
+	char	*ret;
+	char	quote;
+	int		i;
+
+	ret = ft_calloc(1, 1);
+	quote = '\0';
+	i = 0;
+	while (s[i])
+	{
+		if ((s[i] == '\'' || s[i] == '\"') && quote == '\0')
+		{
+			quote = s[i];
+			//if ((s[i + 1] != '\'' && s[i + 1] != '\"'))
+			if (s[i + 1] != quote)
+				ret = str_append_char(ret, s[i]);
+		}
+		else if (s[i] == quote)
+		{
+			//if (s[i - 1] != '\'' && s[i - 1] != '\"')
+			if (s[i - 1] != quote)
+				ret = str_append_char(ret, s[i]);
+			quote = '\0';
+		}
+		else
+			ret = str_append_char(ret, s[i]);
+		i++;
 	}
 	return (ret);
 }
