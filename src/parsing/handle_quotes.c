@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/14 16:36:38 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/16 16:15:23 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 //static char		*remove_quotes(char *s);
 //static int		count_quotes(char *s);
 //static int			has_quotes(char *s);
-static void				handle_export_expanding(t_token **head, t_token *node, t_token *prv, t_env *s_env, int exit_status);
+static t_token			*handle_export_expanding(t_token **head, t_token *node, t_token *prv, t_env *s_env, int exit_status);
 static t_export_parse	*expand_export_fragments(char **split, t_env *s_env, int exit_status);
 static void				addlst_export_parse(t_export_parse **head, char	*new_frag);
 static void				split_after_expand(t_export_parse **head);
@@ -25,6 +25,7 @@ static void				addlst_export_back(t_export_parse **head, t_export_parse **rest);
 static void				freelst_export(t_export_parse *node);
 static void				split_and_insert_expanded(t_export_parse **head, t_export_parse *node);
 static void				insert_expanded_in_tokens(t_token **start, t_export_parse *head);
+static t_token			*find_last_token(t_export_parse **exp_head, t_token **head);
 static char				*remove_quotes(char *s, t_env *s_env, int exit_status);
 static int				is_word(t_tokens_type type);
 static t_substring		*split_quotes(char *s);
@@ -57,7 +58,7 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env, int exit_status)
 		if (export_flag == 0)
 			split_and_insert_tokens(&s_tokens, node);
 		else if (ft_strcmp(node->value, "export") != 0)
-			handle_export_expanding(&s_tokens, node, prv, s_env, exit_status);
+			prv = handle_export_expanding(&s_tokens, node, prv, s_env, exit_status);
 		if (has_quotes(node->value))
 		{
 			node->value = remove_quotes(node->value, s_env, exit_status);
@@ -76,21 +77,22 @@ void	handle_quotes(t_token *s_tokens, t_env *s_env, int exit_status)
 				&& ft_strcmp("export", prv->value) != 0)
 				split_and_insert_tokens(&s_tokens, node, prv);*/
 		}
-		prv = node;
+		if (export_flag == 0)
+			prv = node;
 		node = node->next;
 	}
 }
 
-static void	handle_export_expanding(t_token **head, t_token *node, t_token *prv, t_env *s_env, int exit_status)
+static t_token	*handle_export_expanding(t_token **head, t_token *node, t_token *prv, t_env *s_env, int exit_status)
 {
 	t_export_parse	*exp_head;
 	char			**split;
 
 	if (ft_strchr(node->value, '$') == NULL)
-		return ;
+		return (NULL);
 	split = ft_split(node->value, "=");
 	if (ft_strchr(split[0], '$') == NULL)
-		return ;
+		return (NULL);
 	exp_head = expand_export_fragments(split, s_env, exit_status);
 	split_after_expand(&exp_head);
 	find_and_join_equal(&exp_head);
@@ -105,11 +107,12 @@ static void	handle_export_expanding(t_token **head, t_token *node, t_token *prv,
 		printf("[%s]		|		was_expanded ==> [%d]\n", exp_head->fragment, exp_head->type);
 		exp_head = exp_head->next;
 	}*/
-	t_token *current = *head;
+	/*t_token *current = *head;
     while (current) {
         printf("Token: [%s] Type: %d\n", current->value, current->type);
         current = current->next;
-    }
+    }*/
+	return (find_last_token(&exp_head, head));
 }
 
 static t_export_parse	*expand_export_fragments(char **split, t_env *s_env, int exit_status)
@@ -193,6 +196,8 @@ static void	find_and_join_equal(t_export_parse **head)
 	node = *head;
 	next = node->next;
 	prv = node;
+	if (!(node->next))
+		return ;
 	next2 = node->next->next;
 	while (node)
 	{
@@ -308,6 +313,8 @@ static void	insert_expanded_in_tokens(t_token **start, t_export_parse *head)
 
 	node = *start;
 	exp_node = head;
+	//if (!(rest) || !(rest->next))
+	//	return ;
 	rest = node->next->next;
 	while (exp_node)
 	{
@@ -322,6 +329,24 @@ static void	insert_expanded_in_tokens(t_token **start, t_export_parse *head)
 		exp_node = exp_node->next;
 	}
 	node->next = rest;
+}
+
+static t_token	*find_last_token(t_export_parse **exp_head, t_token **head)
+{
+	t_token			*token;
+	t_export_parse	*export;
+
+	token = *head;
+	export = *exp_head;
+	while (export->next)
+		export = export->next;
+	while (token)
+	{
+		if (ft_strcmp(token->value, export->fragment) == 0)
+			return (token);
+		token = token->next;
+	}
+	return (NULL);
 }
 
 int	has_quotes(char *s)
@@ -400,37 +425,6 @@ static t_substring	*split_quotes(char *s)
 		add_substring(&list, ft_substr(s, start, i - start), 0);
 	return (list);
 }
-
-/*static t_substring	*split_quotes(char *s)
-{
-	t_substring	*list;
-	int			i;
-	int			start;
-	int			end;
-	char		cur_quote;
-
-	list = NULL;
-	i = 0;
-	start = 0;
-	end = 0;
-	cur_quote = '\0';
-	while (s[i])
-	{
-		if ((s[i] == '\'' || s[i] == '\"') && cur_quote == '\0')
-		{
-			cur_quote = s[i];
-			start = i + 1;
-		}
-		else if (s[i] == cur_quote && s[i])
-		{
-			end = i;
-			add_substring(&list, ft_substr(s, start, end - start), cur_quote);
-			cur_quote = '\0';
-		}
-		i++;
-	}
-	return (list);
-}*/
 
 static void	add_substring(t_substring **head, char *s, char quote)
 {
@@ -569,58 +563,3 @@ static void	free_split(char **split)
 	while (split[i])
 		free(split[i++]);
 }
-
-/*static char	*remove_quotes(char *s)
-{
-	int		i;
-	int		j;
-	char	cur_quote;
-	char	*ret;
-
-	i = 0;
-	j = 0;
-	cur_quote = '\0';
-	ret = malloc(sizeof(char) * ft_strlen(s) - count_quotes(s) + 1);
-	if (!ret)
-		return (NULL);
-	while (s[i])
-	{
-		if ((s[i] == '\'' || s[i] == '\"') && cur_quote == '\0')
-			cur_quote = s[i];
-		else if (s[i] == cur_quote && s[i])
-			cur_quote = '\0';
-		else
-		{
-			ret[j] = s[i];
-			j++;
-		}
-		i++;
-	}
-	return (ret);
-}
-
-static int	count_quotes(char *s)
-{
-	int	i;
-	int	count;
-	int	cur_quote;
-
-	i = 0;
-	count = 0;
-	cur_quote = '\0';
-	while (s[i])
-	{
-		if ((s[i] == '\'' || s[i] == '\"') && cur_quote == '\0')
-		{
-			cur_quote = s[i];
-			count++;
-		}
-		else if (s[i] == cur_quote)
-		{
-			cur_quote = '\0';
-			count++;
-		}
-		i++;
-	}
-	return (count);
-}*/
