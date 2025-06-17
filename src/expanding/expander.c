@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/16 16:49:30 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/17 23:00:39 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,13 @@ void	expand_variables(t_substring **head, t_env *s_env, int exit_status)
 	while (node)
 	{
 		old_value = node->str;
-		if (has_var(node->str) && (node->type == DOUBLE_QUOTED || node->type == UNQUOTED))
+		if (has_var(node->str) && ft_strcmp(node->str, "$") == 0 && node->type == UNQUOTED)
+		{
+			node->str = ft_strdup("");
+			node = node->next;
+			continue ;
+		}
+		else if (has_var(node->str) && (node->type == DOUBLE_QUOTED || node->type == UNQUOTED))
 		{
 			node->str = scan_string(node->str, s_env, exit_status);
 			if (old_value != NULL)
@@ -67,6 +73,11 @@ char	*scan_string(char *s, t_env *s_env, int exit_status)
 			{
 				ret = str_append_num(ret, s + i + 2);
 				i += ft_strlen_num(s + i);
+			}
+			else if (s[i + 1] == '\0')
+			{
+				ret = str_append_char(ret, '$');
+				i++;
 			}
 			else if (is_delimiter(s[i + 1]))
 			{
