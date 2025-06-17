@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:06:02 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/16 16:49:30 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/17 19:15:13 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ char	*scan_string(char *s, t_env *s_env, int exit_status)
 				ret = str_append_num(ret, s + i + 2);
 				i += ft_strlen_num(s + i);
 			}
+			else if (s[i + 1] == '\0')
+				i++;
 			else if (is_delimiter(s[i + 1]))
 			{
 				ret = str_append_char(ret, '$');
