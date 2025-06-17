@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 20:50:57 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/09 18:19:52 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:12:35 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,27 @@ char	*ft_itoa(int n)
 		*arr = '-';
 	*(arr + len) = '\0';
 	return (arr);
+}
+
+size_t	ft_strlcat(char *dest, const char *src, size_t n)
+{
+	size_t	sum_len;
+	size_t	dest_len;
+	size_t	src_len;
+	size_t	copy_len;
+
+	dest_len = ft_strlen(dest);
+	src_len = ft_strlen(src);
+	sum_len = dest_len + src_len;
+	if (n <= ft_strlen(dest))
+		return (n + src_len);
+	copy_len = n - dest_len - 1;
+	dest += dest_len;
+	while (*src && copy_len)
+	{
+		*dest++ = *src++;
+		copy_len--;
+	}
+	*dest = '\0';
+	return (sum_len);
 }
