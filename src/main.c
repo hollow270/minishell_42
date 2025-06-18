@@ -6,10 +6,10 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/17 16:40:53 by hnemmass         ###   ########.fr       */
-/*   Updated: 2025/06/17 23:41:18 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/18 18:49:16 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../inc/minishell.h"
 
@@ -33,8 +33,8 @@ int main(int arc, char **argv, char **env)
 
 	(void)arc;
 	(void)argv;
-	if (!isatty(STDIN_FILENO))
-    	exit (1);
+	// if (!isatty(STDIN_FILENO))
+    // 	exit (1);
 	s_minishell = init_minishell(env, &e_status);
 	if (!s_minishell)
 		return (e_status);
@@ -94,6 +94,8 @@ static t_status	minishell(t_minishell **s_minishell)
 	if (!s_ms->cmdline)
 	{
 		printf("exit\n");
+		close(s_ms->stdfd[0]);
+		close(s_ms->stdfd[1]);
 		exit(s_ms->exit_status);
 	}
 	if (signal_received == 130)
@@ -105,18 +107,20 @@ static t_status	minishell(t_minishell **s_minishell)
 	{
 		rl_clear_history();
 		free(s_ms->cmdline);
+		close(s_ms->stdfd[0]);
+		close(s_ms->stdfd[1]);
 		return (STATUS_EXIT_CMD);
 	}
 	add_history(s_ms->cmdline);
 	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
 	if (parse_command_line(s_ms) != STATUS_FAILURE)
 	{
-		//print_cmd_structure(s_ms->s_cmd);
+		// print_cmd_structure(s_ms->s_cmd);
 		ft_execute(s_ms->s_cmd, s_ms);
 	}
 	// s_ms->s_cmd = parse(s_ms->s_tokens);
 	// print_cmds(s_ms->s_cmd);
-	//print_tokens(s_ms->s_tokens);
+	// print_tokens(s_ms->s_tokens);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
 	free_commands(s_ms);

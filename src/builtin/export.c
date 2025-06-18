@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 14:13:32 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/10 14:38:35 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/18 16:41:08 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,8 +356,10 @@ int	ft_export(char **cmd, t_env *env)
 {
 	int		i;
 	int		flag;
+	int		exit_stat;
 
 	i = 1;
+	exit_stat = 0;
 	while(cmd[i] && cmd[i][0] == '\0')
 		i++;
 	if (!cmd[i])
@@ -377,7 +379,11 @@ int	ft_export(char **cmd, t_env *env)
 		}
 		if (flag == 1)
 		{
-			printf("export: `%s': not a valid identifier\n", cmd[i]);
+			exit_stat = 1;
+			ft_putstr_fd("export: ", 2);
+			ft_putstr_fd(cmd[i], 2);
+			ft_putstr_fd(": not a valid identifier\n", 2);
+			// printf("export: `%s': not a valid identifier\n", cmd[i]);
 			i++;
 			continue ;
 		}
@@ -390,5 +396,5 @@ int	ft_export(char **cmd, t_env *env)
 			handle_variable_with_value(cmd[i], flag, env);
 		i++;
 	}
-	return (0);
+	return (exit_stat);
 }
