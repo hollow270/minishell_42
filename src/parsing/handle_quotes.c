@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/18 17:55:05 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/18 20:20:12 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -658,46 +658,47 @@ void	handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
 		if (has_quotes(node->value) && node->type != TOKEN_EOF)
 		{
 			node->value = remove_quotes(node->value, s_env, exit_status);
-			//if (old_value != NULL)
-			//	free(old_value);
+			if (old_value != NULL)
+				free(old_value);
 		}
 		else if (has_quotes(node->value) && node->type == TOKEN_EOF)
 		{
 			node->value = leave_outer_quotes(node->value);
-			//if (old_value != NULL)
-			//	free(old_value);
+			if (old_value != NULL)
+				free(old_value);
 		}
 		else if (!has_quotes(node->value) && is_word(node->type))
 		{
 			node->value = scan_string(node->value, s_env, exit_status);
 			if (has_var(old_value))
 				split_and_insert_tokens(s_tokens, node);
-			//if (old_value != NULL)
-			//	free(old_value);
+			if (old_value != NULL)
+				free(old_value);
 		}
 		// After expansion, check if node->value is empty and should be removed
-		if (ft_strcmp(node->value, "") == 0 && has_var(old_value))
-		{
-			/*t_token *to_delete = node;
+		// if (ft_strcmp(node->value, "") == 0 && has_var(old_value))
+		// {
+		// 	/*t_token *to_delete = node;
 			
-			// If removing the first node
-			if (node == s_tokens) {
-				s_tokens = node->next;  // Update head
-				prv = s_tokens;         // Reset prv
-				node = s_tokens;        // Reset node
-			} else {
-				prv->next = node->next;
-				node = node->next;      // Move to next before freeing
-			}
+		// 	// If removing the first node
+		// 	if (node == s_tokens) {
+		// 		s_tokens = node->next;  // Update head
+		// 		prv = s_tokens;         // Reset prv
+		// 		node = s_tokens;        // Reset node
+		// 	} else {
+		// 		prv->next = node->next;
+		// 		node = node->next;      // Move to next before freeing
+		// 	}
 			
-			free(to_delete->value);
-			free(to_delete);*/
-			remove_empty_expanded(s_tokens, &node, &prv);
-			continue;  // Skip the rest of the loop iteration
-		}
+		// 	free(to_delete->value);
+		// 	free(to_delete);*/
+		// 	remove_empty_expanded(s_tokens, &node, &prv);
+		// 	// free(old_value);
+		// 	continue;  // Skip the rest of the loop iteration
+		// }
 
-		if (old_value != NULL)
-			free(old_value);
+		// if (old_value != NULL)
+		// 	free(old_value);
 		if (export_flag == 0)
 			prv = node;
 		node = node->next;
