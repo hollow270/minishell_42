@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 17:02:42 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/17 23:37:23 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/18 14:24:40 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,10 @@ int	ft_echo(char **cmd)
 	if (compare_argument(current[i]) == 0)
 	{
 		i++;
-		while (compare_argument(current[i]) == 0)
+		while (current[i] && compare_argument(current[i]) == 0)
 			i++;
+		if (!current[i])
+			return (0);
 		while (current[i + 1])
 		{
 			printf("%s ", current[i]);

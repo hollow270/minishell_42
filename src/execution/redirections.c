@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:05:26 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/09 17:10:23 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/18 17:46:55 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int apply_redirections(t_redirect *red, t_minishell *mini)
         return (0);
     fd = open_with_mode(red->file, mode);
     if (fd == -1)
-        exit(1);
+        return (-1);
     dup2(fd, get_fd_type(red->type));
     close(fd);
     return (0);
