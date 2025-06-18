@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/12 15:34:57 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:22:25 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,11 +211,53 @@ static void	setup_heredoc_signals(int temp_fd)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+char	*check_delimiter(char *delimiter, int *flag)
+{
+	char	*new_delimiter;
+	int		i;
+	int		j;
+
+	if (delimiter[0] == '\'')
+	{
+		*flag = 1;
+		i = 1;
+		while (delimiter[i] != '\'')
+			i++;
+		new_delimiter = malloc(i);
+		j = 1;
+		i = 0;
+		while (delimiter[j] != '\'')
+			new_delimiter[i++] = delimiter[j++];
+		new_delimiter[i] = '\0';
+		return (new_delimiter);
+	}
+	if (delimiter[0] == '\"')
+	{
+		*flag = 1;
+		i = 1;
+		while (delimiter[i] != '\"')
+			i++;
+		new_delimiter = malloc(i);
+		j = 1;
+		i = 0;
+		while (delimiter[j] != '\"')
+			new_delimiter[i++] = delimiter[j++];
+		new_delimiter[i] = '\0';
+		return (new_delimiter);
+	}
+	new_delimiter = delimiter;
+	return (new_delimiter);
+}
+
 static int	heredoc_child_process(char *delimiter, char *filename, t_minishell *mini)
 {
 	char	*line;
 	int		temp_fd;
+	int		flag;
+	char	*new_delimiter;
 
+	flag = 0;
+	new_delimiter == NULL;
 	temp_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	close_fd(temp_fd, 0);
 	if (temp_fd == -1)
@@ -224,17 +266,19 @@ static int	heredoc_child_process(char *delimiter, char *filename, t_minishell *m
 		exit(1);
 	}
 	setup_heredoc_signals(temp_fd);
+	new_delimiter = check_delimiter(delimiter, &flag);
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 			break;
-		if (!compare(line, delimiter))
+		if (!compare(line, new_delimiter))
 		{
 			free(line);
 			break;
 		}
-		line = scan_string(line, mini->s_env, mini->exit_status);
+		if (flag == 0)
+			line = scan_string(line, mini->s_env, mini->exit_status);
 		line = ft_strjoin_free(line, "\n");
 		ft_putstr_fd(line, temp_fd);
 		free(line);

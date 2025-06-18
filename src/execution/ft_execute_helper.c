@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/10 15:41:00 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/17 18:13:05 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,7 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	char	*tmp_path;
 	char	**path;
 	char	**env_array;
+	char	*sh;
 
 	if (!cmd || !(*cmd))
 		exit(0);
@@ -249,6 +250,11 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	{
 		if (access(cmd[0], F_OK | X_OK) == 0)
 			execve(cmd[0], cmd, env_array);
+			if (errno == ENOEXEC)
+			{
+				sh = ft_strjoin("/bin/sh ", cmd[0]);
+				execve(sh, cmd, env_array);
+			}
 		check_cwd(cmd, env_array);
 	}
 	else
