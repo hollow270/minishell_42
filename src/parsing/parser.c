@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:08:40 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/23 16:40:00 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/17 19:56:11 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,7 @@ static void	add_arg(t_cmd **head, char *arg)
 	new_argv[j + 1] = NULL;
 	s_cmd->is_builtin = is_builtin(new_argv[0]);
 	free_argv(s_cmd->argv);
+	free(s_cmd->argv);
 	s_cmd->argv = new_argv;
 }
 

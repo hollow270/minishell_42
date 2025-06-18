@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:57:19 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/05/09 18:20:02 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:12:53 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ int		is_redirection(t_tokens_type type);
 int		is_file_eof(t_tokens_type type);
 char	*ft_strchr(const char *s, int c);
 char	*ft_itoa(int n);
+size_t	ft_strlcat(char *dest, const char *src, size_t n);
 
 #endif
