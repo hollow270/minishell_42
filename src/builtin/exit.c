@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 14:13:32 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/22 20:35:12 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/18 17:57:43 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int ft_exit(char **cmd, t_minishell *mini)
 {
 	long long		num;
 
-	ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("exit\n", 1);
 	if (!cmd[1])
 		exit (mini->exit_status);
 	if (check_is_number(cmd[1]))

@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
 /*   Updated: 2025/06/18 20:19:05 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../inc/minishell.h"
 
@@ -93,6 +94,8 @@ static t_status	minishell(t_minishell **s_minishell)
 	if (!s_ms->cmdline)
 	{
 		printf("exit\n");
+		close(s_ms->stdfd[0]);
+		close(s_ms->stdfd[1]);
 		exit(s_ms->exit_status);
 	}
 	if (signal_received == 130)
@@ -104,6 +107,8 @@ static t_status	minishell(t_minishell **s_minishell)
 	{
 		rl_clear_history();
 		free(s_ms->cmdline);
+		close(s_ms->stdfd[0]);
+		close(s_ms->stdfd[1]);
 		return (STATUS_EXIT_CMD);
 	}
 	add_history(s_ms->cmdline);
@@ -115,7 +120,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	}
 	// s_ms->s_cmd = parse(s_ms->s_tokens);
 	// print_cmds(s_ms->s_cmd);
-	//print_tokens(s_ms->s_tokens);
+	// print_tokens(s_ms->s_tokens);
 	free(s_ms->cmdline);
 	ft_free_tokens(s_ms->s_tokens);
 	free_commands(s_ms);

@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/12 15:34:57 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/18 18:29:18 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,11 +211,53 @@ static void	setup_heredoc_signals(int temp_fd)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+char	*check_delimiter(char *delimiter, int *flag)
+{
+	char	*new_delimiter;
+	int		i;
+	int		j;
+
+	if (delimiter[0] == '\'')
+	{
+		*flag = 1;
+		i = 1;
+		while (delimiter[i] != '\'')
+			i++;
+		new_delimiter = malloc(i);
+		j = 1;
+		i = 0;
+		while (delimiter[j] != '\'')
+			new_delimiter[i++] = delimiter[j++];
+		new_delimiter[i] = '\0';
+		return (new_delimiter);
+	}
+	if (delimiter[0] == '\"')
+	{
+		*flag = 1;
+		i = 1;
+		while (delimiter[i] != '\"')
+			i++;
+		new_delimiter = malloc(i);
+		j = 1;
+		i = 0;
+		while (delimiter[j] != '\"')
+			new_delimiter[i++] = delimiter[j++];
+		new_delimiter[i] = '\0';
+		return (new_delimiter);
+	}
+	new_delimiter = delimiter;
+	return (new_delimiter);
+}
+
 static int	heredoc_child_process(char *delimiter, char *filename, t_minishell *mini)
 {
 	char	*line;
 	int		temp_fd;
+	int		flag;
+	char	*new_delimiter;
 
+	flag = 0;
+	new_delimiter == NULL;
 	temp_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	close_fd(temp_fd, 0);
 	if (temp_fd == -1)
@@ -224,21 +266,24 @@ static int	heredoc_child_process(char *delimiter, char *filename, t_minishell *m
 		exit(1);
 	}
 	setup_heredoc_signals(temp_fd);
+	new_delimiter = check_delimiter(delimiter, &flag);
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 			break;
-		if (!compare(line, delimiter))
+		if (!compare(line, new_delimiter))
 		{
 			free(line);
 			break;
 		}
-		line = scan_string(line, mini->s_env, mini->exit_status);
+		if (flag == 0)
+			line = scan_string(line, mini->s_env, mini->exit_status);
 		line = ft_strjoin_free(line, "\n");
 		ft_putstr_fd(line, temp_fd);
 		free(line);
 	}
+	free(new_delimiter);
 	close(temp_fd);
 	exit(0);
 }
@@ -368,7 +413,7 @@ static void	close_heredocs(t_cmd *cmd_list)
 	}
 }
 
-static void	setup_redirections(t_cmd *cmd, t_minishell *mini)
+static int	setup_redirections(t_cmd *cmd, t_minishell *mini)
 {
 	t_redirect	*r;
 
@@ -385,9 +430,13 @@ static void	setup_redirections(t_cmd *cmd, t_minishell *mini)
 			}
 		}
 		else
-			apply_redirections(r, mini);
+		{
+			if (apply_redirections(r, mini) == -1)
+				return (1);
+		}
 		r = r->next;
 	}
+	return (0);
 }
 
 static void setup_child_signals(void)
@@ -411,7 +460,8 @@ static void	ft_handle_child(t_cmd *cmd, int prev_fd, int *pipe_fd,
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	setup_redirections(cmd, env);
+	if (setup_redirections(cmd, env) == 1)
+		exit (1);
 	if (cmd->is_builtin)
 	{
 		env->exit_status = exec_builtin(cmd->argv, env);
@@ -511,7 +561,13 @@ static pid_t	execute_single_cmd(t_cmd *cmd, t_minishell *env)
 	{
 		int fd1 = dup(STDIN_FILENO);
 		int fd2 = dup(STDOUT_FILENO);
-		setup_redirections(cmd, env);
+		if (setup_redirections(cmd, env) == 1)
+		{
+			env->exit_status = 1;
+			dup2(fd1, STDIN_FILENO);
+			dup2(fd2, STDOUT_FILENO);
+			return (0);
+		}
 		env->exit_status = exec_builtin(cmd->argv, env);
 		dup2(fd1, STDIN_FILENO);
 		dup2(fd2, STDOUT_FILENO);

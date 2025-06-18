@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 14:16:38 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/05/08 14:35:13 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/18 17:59:02 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,10 @@ int	ft_cd(char **cmd, t_env *env, t_minishell *mini)
 	if (!env)
 		return (printf("environment not found\n"), 1);
 	if (cmd[1] && cmd[2])
-		return (printf("cd: too many arguments\n"), 1);
+	{
+		ft_putstr_fd("cd: too many arguments\n", 2);
+		return (1);
+	}
 	if (!cmd[1])
 	{
 		path = search_for_dir(env, "HOME");

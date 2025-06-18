@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/18 20:14:56 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/18 18:27:27 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,10 +203,10 @@ static void	find_cmd_path(char **path, char **cmd, char **env_array, t_minishell
 		free(temp);
 	}
 	dup2(mini->stdfd[1], STDOUT_FILENO);
-	printf("%s", cmd[0]);
-	printf(": command not found\n");
+	printf("%s: command not found\n", cmd[0]);
 	exit(127);
 }
+
 char	*make_path(t_env *env)
 {
 	t_env	*current;
@@ -226,6 +226,7 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	char	*tmp_path;
 	char	**path;
 	char	**env_array;
+	char	*sh;
 
 	// if (!cmd || !(*cmd))
 	// 	exit(0);
@@ -250,7 +251,19 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
 	{
 		if (access(cmd[0], F_OK | X_OK) == 0)
+		
 			execve(cmd[0], cmd, env_array);
+			// if (errno == ENOEXEC)
+			// {
+			//     execve(cmd[0], cmd, env_array);
+			//     if (errno == ENOEXEC)
+			//     {
+			//         char *sh_argv[] = { "sh", cmd[0], NULL };
+			//         execve("/bin/sh", sh_argv, env_array);
+			//     }
+			//     perror(cmd[0]);
+			//     exit(127);
+			// }
 		check_cwd(cmd, env_array);
 	}
 	else
