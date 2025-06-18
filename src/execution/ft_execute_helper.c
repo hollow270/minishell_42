@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_execute_helper.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/10 15:41:00 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:14:56 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,9 @@ static void	find_cmd_path(char **path, char **cmd, char **env_array, t_minishell
 		{
 			execve(temp, cmd, env_array);
 			free(temp);
-			exit(0);
+			dup2(mini->stdfd[1], STDOUT_FILENO);
+			printf("\'\': command not found\n");
+			exit(127);
 		}
 		free(temp);
 	}
@@ -225,8 +227,8 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	char	**path;
 	char	**env_array;
 
-	if (!cmd || !(*cmd))
-		exit(0);
+	// if (!cmd || !(*cmd))
+	// 	exit(0);
 	env_array = env_to_array(env);
 	if (!env_array)
 	{
