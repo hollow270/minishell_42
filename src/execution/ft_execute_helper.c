@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/18 18:27:27 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:16:43 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,27 +165,48 @@ char	**ft_split_2(char const *s, char c)
 
 static void check_cwd(char **cmd, char **env_array)
 {
-	char *temp;
-	
-	temp = getcwd(NULL, 0);
-	if (!temp)
-		return ;
-	temp = ft_strjoin(temp, "/");
-	temp = ft_strjoin_free(temp, cmd[0]);
-	if (access(temp, F_OK | X_OK) == 0)
-		execve(temp, cmd, env_array);
-	perror(cmd[0]);
-	free(temp);
-    if (errno == EACCES)
-        exit (126);
-    else
-        exit (127);
+    char *temp;
+    
+    temp = getcwd(NULL, 0);
+    if (!temp)
+        return;
+    temp = ft_strjoin(temp, "/");
+    temp = ft_strjoin_free(temp, cmd[0]);
+    if (access(temp, F_OK) == 0)
+    {
+        execve(temp, cmd, env_array);
+        perror(cmd[0]);
+        free(temp);
+        exit(126);
+    }
+    perror(cmd[0]);
+    free(temp);
+    exit(127);
 }
 
-static void	find_cmd_path(char **path, char **cmd, char **env_array, t_minishell *mini)
+static void find_cmd_path(char **path, char **cmd, char **env_array, t_minishell *mini)
 {
-	char	*temp;
-	int		i;
+    char *temp;
+    int i;
+
+    i = -1;
+    while (path[++i])
+    {
+        temp = ft_strjoin(path[i], "/");
+        temp = ft_strjoin_free(temp, cmd[0]);
+        
+        if (access(temp, F_OK) == 0)
+        {
+            execve(temp, cmd, env_array);
+            perror(cmd[0]);
+            free(temp);
+            exit(126);
+        }
+        free(temp);
+    }
+    dup2(mini->stdfd[1], STDOUT_FILENO);
+    printf("%s: command not found\n", cmd[0]);
+    exit(127);
 
 	i = -1;
 	while (path[++i])
@@ -221,6 +242,76 @@ char	*make_path(t_env *env)
 	return(NULL);
 }
 
+static void	print_exec_error(char *path, int code)
+{
+	if (code == 127)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
+	else if (code == 126)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": Permission denied\n", 2);
+	}
+}
+
+static void	free_exec_argv(char **argv)
+{
+	int	i;
+
+	i = 0;
+	while (argv[i])
+		i++;
+	free(argv);
+}
+
+static void	exec_script_with_bash(char *path, char **argv, char **envp)
+{
+	char	**new_argv;
+	int		i;
+	int		argc;
+
+	argc = 0;
+	while (argv[argc])
+		argc++;
+	new_argv = malloc(sizeof(char *) * (argc + 2));
+	if (!new_argv)
+		exit(126);
+	new_argv[0] = "/bin/bash";
+	new_argv[1] = path;
+	i = 1;
+	while (i <= argc)
+	{
+		new_argv[i + 1] = argv[i];
+		i++;
+	}
+	execve("/bin/bash", new_argv, envp);
+	free_exec_argv(new_argv);
+}
+
+void	exec_path_command(char *path, char **argv, char **envp)
+{
+	if (access(path, F_OK) != 0)
+	{
+		print_exec_error(path, 127);
+		exit(127);
+	}
+	if (access(path, X_OK) != 0)
+	{
+		print_exec_error(path, 126);
+		exit(126);
+	}
+	execve(path, argv, envp);
+	if (errno == ENOEXEC)
+		exec_script_with_bash(path, argv, envp);
+	perror("bash");
+	exit(126);
+}
+
+
 void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 {
 	char	*tmp_path;
@@ -249,23 +340,7 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 		return ;
 	}
 	if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
-	{
-		if (access(cmd[0], F_OK | X_OK) == 0)
-		
-			execve(cmd[0], cmd, env_array);
-			// if (errno == ENOEXEC)
-			// {
-			//     execve(cmd[0], cmd, env_array);
-			//     if (errno == ENOEXEC)
-			//     {
-			//         char *sh_argv[] = { "sh", cmd[0], NULL };
-			//         execve("/bin/sh", sh_argv, env_array);
-			//     }
-			//     perror(cmd[0]);
-			//     exit(127);
-			// }
-		check_cwd(cmd, env_array);
-	}
+		exec_path_command(cmd[0], cmd, env_array);
 	else
 		find_cmd_path(path, cmd, env_array, mini);
 	free_split_2(path);
