@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/19 18:57:22 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/19 19:44:34 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,25 +207,6 @@ static void find_cmd_path(char **path, char **cmd, char **env_array, t_minishell
     dup2(mini->stdfd[1], STDOUT_FILENO);
     printf("%s: command not found\n", cmd[0]);
     exit(127);
-
-	i = -1;
-	while (path[++i])
-	{
-		temp = ft_strjoin(path[i], "/");
-		temp = ft_strjoin_free(temp, cmd[0]);
-		if (access(temp, F_OK | X_OK) == 0)
-		{
-			execve(temp, cmd, env_array);
-			free(temp);
-			dup2(mini->stdfd[1], STDOUT_FILENO);
-			printf("\'\': command not found\n");
-			exit(127);
-		}
-		free(temp);
-	}
-	dup2(mini->stdfd[1], STDOUT_FILENO);
-	printf("%s: command not found\n", cmd[0]);
-	exit(127);
 }
 
 char	*make_path(t_env *env)
@@ -319,6 +300,8 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	char	**env_array;
 	char	*sh;
 
+	if (!(cmd))
+		exit (0);
 	if (cmd[0][0] == '\0')
 	{
 		ft_putstr_fd("\'\': command not found\n", 2);

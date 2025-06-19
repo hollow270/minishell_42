@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/19 18:44:13 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/19 19:39:11 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -758,7 +758,7 @@ void handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
         }
         
         // Check if the node should be removed (empty after variable expansion)
-        if (ft_strcmp(node->value, "") == 0 && has_var(old_value))
+        if (ft_strcmp(node->value, "") == 0 && has_var(old_value) && has_quotes(old_value) == 0)
         {
             if (should_free_old_value && old_value != NULL)
                 free(old_value);
