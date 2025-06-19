@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/19 21:06:31 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/19 21:15:27 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ static t_minishell	*init_minishell(char **env, t_status *e_status)
 	s_minishell->s_env = get_env(env);
 	if (!s_minishell->s_env)
 		return (*e_status = STATUS_MALLOC_FAIL, NULL);
-	s_minishell->cwd = get_env_value(s_minishell->s_env, "PWD");
+	s_minishell->cwd = getcwd(NULL, 0);
+	//s_minishell->cwd = get_env_value(s_minishell->s_env, "PWD");
 	if (!s_minishell->cwd)
 		return (*e_status = STATUS_MALLOC_FAIL, free_env(s_minishell->s_env), NULL);
 	s_minishell->stdfd[0] = dup(STDIN_FILENO);
@@ -115,7 +116,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	s_ms->s_tokens = ft_tokenizer(s_ms->cmdline);
 	if (parse_command_line(s_ms) != STATUS_FAILURE)
 	{
-		// print_cmd_structure(s_ms->s_cmd);
+		print_cmd_structure(s_ms->s_cmd);
 		ft_execute(s_ms->s_cmd, s_ms);
 	}
 	// s_ms->s_cmd = parse(s_ms->s_tokens);
