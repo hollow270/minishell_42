@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/19 18:16:43 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:57:22 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,8 +319,11 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	char	**env_array;
 	char	*sh;
 
-	// if (!cmd || !(*cmd))
-	// 	exit(0);
+	if (cmd[0][0] == '\0')
+	{
+		ft_putstr_fd("\'\': command not found\n", 2);
+		exit(127);
+	}
 	env_array = env_to_array(env);
 	if (!env_array)
 	{
