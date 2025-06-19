@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/18 20:20:12 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/19 18:44:13 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -595,7 +595,6 @@ static void	free_split(char **split)
 */
 #include "../../inc/minishell.h"
 
-static void				remove_empty_expanded(t_token **head, t_token **node, t_token **prv);
 static t_token			*handle_export_expanding(t_token **head, t_token *node, t_token *prv, t_env *s_env, int exit_status);
 static char				*add_space_front(char **s);
 static char				*add_space_back(char **s);
@@ -624,7 +623,7 @@ static void				free_split(char **split);
 static char				**split_preserve_spaces(char *s);
 static void				free_substrings(t_substring *head);
 
-void	handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
+/*void	handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
 {
 	t_token	*node;
 	t_token	*prv;
@@ -675,51 +674,106 @@ void	handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
 			if (old_value != NULL)
 				free(old_value);
 		}
-		// After expansion, check if node->value is empty and should be removed
-		// if (ft_strcmp(node->value, "") == 0 && has_var(old_value))
-		// {
-		// 	/*t_token *to_delete = node;
-			
-		// 	// If removing the first node
-		// 	if (node == s_tokens) {
-		// 		s_tokens = node->next;  // Update head
-		// 		prv = s_tokens;         // Reset prv
-		// 		node = s_tokens;        // Reset node
-		// 	} else {
-		// 		prv->next = node->next;
-		// 		node = node->next;      // Move to next before freeing
-		// 	}
-			
-		// 	free(to_delete->value);
-		// 	free(to_delete);*/
-		// 	remove_empty_expanded(s_tokens, &node, &prv);
-		// 	// free(old_value);
-		// 	continue;  // Skip the rest of the loop iteration
-		// }
-
-		// if (old_value != NULL)
-		// 	free(old_value);
 		if (export_flag == 0)
 			prv = node;
 		node = node->next;
 	}
+}*/
+
+// Add this function to your file
+static void remove_empty_node(t_token **head, t_token **current, t_token **previous)
+{
+    t_token *to_delete = *current;
+    
+    if (!to_delete)
+        return;
+    
+    // If we're removing the first node (head)
+    if (*previous == *current) {
+        *head = (*current)->next;
+        *current = *head;
+        *previous = *head;
+    } else {
+        (*previous)->next = (*current)->next;
+        *current = (*current)->next;
+    }
+    
+    // Free the node
+    if (to_delete->value)
+        free(to_delete->value);
+    free(to_delete);
 }
 
-static void	remove_empty_expanded(t_token **head, t_token **node, t_token **prv)
-{	
-	t_token *to_delete;
+// Modified handle_quotes function - replace the relevant section
+void handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
+{
+    t_token *node;
+    t_token *prv;
+    char *old_value;
+    int export_flag;
+    int should_free_old_value;
 
-	to_delete = *node;
-	if (*node == *head) {
-		*head = (*node)->next;
-		*prv = *head;
-		*node = *head;
-	} else {
-		(*prv)->next = (*node)->next;
-		*node = (*node)->next;
-	}
-	free(to_delete->value);
-	free(to_delete);
+    node = *s_tokens;
+    prv = *s_tokens;
+    old_value = NULL;
+    export_flag = 0;
+    
+    while (node)
+    {
+        old_value = node->value;
+        should_free_old_value = 0;
+        
+        if (ft_strcmp(node->value, "export") == 0)
+            export_flag = 1;
+        else if (node->type == TOKEN_PIPE)
+            export_flag = 0;
+            
+        if (export_flag == 1)
+        {
+            t_token *next_after_expansion = handle_export_expanding(s_tokens, node, prv, s_env, exit_status);
+            if (next_after_expansion)
+            {
+                prv = next_after_expansion;
+                node = next_after_expansion->next;
+                continue;
+            }
+        }
+        
+        if (has_quotes(node->value) && node->type != TOKEN_EOF)
+        {
+            node->value = remove_quotes(node->value, s_env, exit_status);
+            should_free_old_value = 1;
+        }
+        else if (has_quotes(node->value) && node->type == TOKEN_EOF)
+        {
+            node->value = leave_outer_quotes(node->value);
+            should_free_old_value = 1;
+        }
+        else if (!has_quotes(node->value) && is_word(node->type))
+        {
+            node->value = scan_string(node->value, s_env, exit_status);
+            if (has_var(old_value))
+                split_and_insert_tokens(s_tokens, node);
+            should_free_old_value = 1;
+        }
+        
+        // Check if the node should be removed (empty after variable expansion)
+        if (ft_strcmp(node->value, "") == 0 && has_var(old_value))
+        {
+            if (should_free_old_value && old_value != NULL)
+                free(old_value);
+            remove_empty_node(s_tokens, &node, &prv);
+            continue; // Skip the rest of the loop iteration
+        }
+        
+        // Free old_value only if it was replaced and we didn't remove the node
+        if (should_free_old_value && old_value != NULL)
+            free(old_value);
+            
+        if (export_flag == 0)
+            prv = node;
+        node = node->next;
+    }
 }
 
 static t_token	*handle_export_expanding(t_token **head, t_token *node, t_token *prv, t_env *s_env, int exit_status)
