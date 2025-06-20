@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/20 16:10:07 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/20 19:28:27 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ static t_status	minishell(t_minishell **s_minishell)
 	{
 		rl_clear_history();
 		free(s_ms->cmdline);
+		free_commands(s_ms);
 		close(s_ms->stdfd[0]);
 		close(s_ms->stdfd[1]);
 		return (STATUS_EXIT_CMD);
