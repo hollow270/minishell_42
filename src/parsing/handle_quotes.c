@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 21:14:33 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/19 19:39:11 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/20 19:35:56 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -752,7 +752,7 @@ void handle_quotes(t_token **s_tokens, t_env *s_env, int exit_status)
         else if (!has_quotes(node->value) && is_word(node->type))
         {
             node->value = scan_string(node->value, s_env, exit_status);
-            if (has_var(old_value))
+            if (has_var(old_value) && !ft_strchr(old_value, '='))
                 split_and_insert_tokens(s_tokens, node);
             should_free_old_value = 1;
         }
