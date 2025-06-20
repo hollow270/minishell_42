@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/19 21:06:31 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/20 16:10:07 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 int signal_received = 0;
 
 static t_minishell	*init_minishell(char **env, t_status *e_status);
+static t_env 		*get_pwd();
 static t_status		minishell(t_minishell **s_minishell);
 static t_cmd		*create_cmd();
 static void			print_env(t_env *env);
@@ -56,15 +57,32 @@ static t_minishell	*init_minishell(char **env, t_status *e_status)
 	s_minishell = (t_minishell *)malloc(sizeof(t_minishell));
 	if (!s_minishell)
 		return (*e_status = STATUS_MALLOC_FAIL, NULL);
-	s_minishell->s_env = get_env(env);
+	if (!*env)
+		s_minishell->s_env = get_pwd();
+	else
+		s_minishell->s_env = get_env(env);
 	if (!s_minishell->s_env)
 		return (*e_status = STATUS_MALLOC_FAIL, NULL);
-	s_minishell->cwd = get_env_value(s_minishell->s_env, "PWD");
+	s_minishell->cwd = getcwd(NULL, 0);
+	//s_minishell->cwd = get_env_value(s_minishell->s_env, "PWD");
 	if (!s_minishell->cwd)
 		return (*e_status = STATUS_MALLOC_FAIL, free_env(s_minishell->s_env), NULL);
 	s_minishell->stdfd[0] = dup(STDIN_FILENO);
 	s_minishell->stdfd[1] = dup(STDOUT_FILENO);
 	return (s_minishell);
+}
+
+static t_env *get_pwd()
+{
+	t_env	*ret;
+
+	ret = malloc(sizeof(t_env));
+	if (!ret)
+		return (NULL);
+	ret->name = ft_strdup("PWD");
+	ret->value = getcwd(NULL, 0);
+	ret->next = NULL;
+	return (ret);
 }
 
 void	handle_int(int sig)
