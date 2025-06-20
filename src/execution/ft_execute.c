@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:45:12 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/18 18:29:18 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:33:50 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	exec_builtin(char **cmd, t_minishell *minishell)
 	else if (ft_strcmp(cmd[0], "env") == 0)
 		return (ft_env(minishell->s_env));
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		return (ft_export(cmd, minishell->s_env));
+		return (ft_export(cmd, &minishell->s_env));
 	else if (ft_strcmp(cmd[0], "pwd") == 0)
 		return (ft_pwd(minishell));
 	else if (ft_strcmp(cmd[0], "unset") == 0)
@@ -181,6 +181,7 @@ static int	open_heredoc_file(char *filename)
 	if (fd == -1)
 		perror(filename);
 	unlink(filename);
+	free(filename);
 	return (fd);
 }
 
