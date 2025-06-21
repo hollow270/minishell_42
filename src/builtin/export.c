@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 14:13:32 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/18 16:41:08 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:37:53 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,18 +219,18 @@ t_env	*ft_lstnew(char *name, char *value)
 	return (node);
 }
 
-void	ft_lstadd_back(t_env *env, t_env *new)
+void	ft_lstadd_back(t_env **env, t_env *new)
 {
 	t_env	*temp;
 
 	if (!new || !env)
 		return ;
-	if (!env->name && !env->value)
+	if (!*env)
 	{
-		env = new;
+		*env = new;
 		return ;
 	}
-	temp = env;
+	temp = *env;
 	while (temp -> next != NULL)
 		temp = temp -> next;
 	temp -> next = new;
@@ -285,7 +285,7 @@ t_env *find_env_var(t_env *env, char *name)
     return (NULL);
 }
 
-static void	handle_export_new_var(char *name, t_env *env)
+static void	handle_export_new_var(char *name, t_env **env)
 {
 	t_env	*new_node;
 	
@@ -313,7 +313,7 @@ static void	handle_existing_var_append(t_env *existing, char **name_value)
 	}
 }
 
-static void	handle_non_existing_var(char **name_value, t_env *env)
+static void	handle_non_existing_var(char **name_value, t_env **env)
 {
 	t_env	*new_node;
 	
@@ -327,7 +327,7 @@ static void	handle_non_existing_var(char **name_value, t_env *env)
 	}
 }
 
-static void	handle_variable_with_value(char *cmd, int flag, t_env *env)
+static void	handle_variable_with_value(char *cmd, int flag, t_env **env)
 {
 	char	**name_value;
 	t_env	*existing;
@@ -335,7 +335,7 @@ static void	handle_variable_with_value(char *cmd, int flag, t_env *env)
 	name_value = modified_split(cmd, flag);
 	if (!name_value)
 		return ;
-	existing = find_env_var(env, name_value[0]);
+	existing = find_env_var(*env, name_value[0]);
 	if (existing)
 	{
 		if (flag == 4 && existing->value)
@@ -352,7 +352,7 @@ static void	handle_variable_with_value(char *cmd, int flag, t_env *env)
 	free(name_value);
 }
 
-int	ft_export(char **cmd, t_env *env)
+int	ft_export(char **cmd, t_env **env)
 {
 	int		i;
 	int		flag;
@@ -363,7 +363,7 @@ int	ft_export(char **cmd, t_env *env)
 	while(cmd[i] && cmd[i][0] == '\0')
 		i++;
 	if (!cmd[i])
-		sort_and_display(env);
+		sort_and_display(*env);
 	while (cmd[i])
 	{
 		flag = check_valid_input(cmd[i]);
@@ -383,13 +383,12 @@ int	ft_export(char **cmd, t_env *env)
 			ft_putstr_fd("export: ", 2);
 			ft_putstr_fd(cmd[i], 2);
 			ft_putstr_fd(": not a valid identifier\n", 2);
-			// printf("export: `%s': not a valid identifier\n", cmd[i]);
 			i++;
 			continue ;
 		}
 		if (flag == 2)
 		{
-			if (!find_env_var(env, cmd[i]))
+			if (!find_env_var(*env, cmd[i]))
 				handle_export_new_var(cmd[i], env);
 		}
 		else if (flag == 3 || flag == 4)

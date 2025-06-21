@@ -6,7 +6,7 @@
 /*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:11:28 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/17 16:06:06 by hnemmass         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:38:14 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int		apply_redirections(t_redirect *red, t_minishell *mini);
 int		ft_cd(char **cmd, t_env *env, t_minishell *mini);
 int		ft_echo(char **cmd);
 int		ft_env(t_env *env);
-int		ft_export(char **cmd, t_env *env);
+int		ft_export(char **cmd, t_env **env);
 int		ft_pwd(t_minishell *mini);
 int		ft_unset(char **cmd, t_env **env);
 void	ft_execute(t_cmd *data, t_minishell *env);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_execute_helper.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hnemmass <hnemmass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:37 by hnemmass          #+#    #+#             */
-/*   Updated: 2025/06/19 19:44:34 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/20 19:01:49 by hnemmass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,27 +163,6 @@ char	**ft_split_2(char const *s, char c)
 
 #include <errno.h>
 
-static void check_cwd(char **cmd, char **env_array)
-{
-    char *temp;
-    
-    temp = getcwd(NULL, 0);
-    if (!temp)
-        return;
-    temp = ft_strjoin(temp, "/");
-    temp = ft_strjoin_free(temp, cmd[0]);
-    if (access(temp, F_OK) == 0)
-    {
-        execve(temp, cmd, env_array);
-        perror(cmd[0]);
-        free(temp);
-        exit(126);
-    }
-    perror(cmd[0]);
-    free(temp);
-    exit(127);
-}
-
 static void find_cmd_path(char **path, char **cmd, char **env_array, t_minishell *mini)
 {
     char *temp;
@@ -273,7 +252,7 @@ static void	exec_script_with_bash(char *path, char **argv, char **envp)
 	free_exec_argv(new_argv);
 }
 
-void	exec_path_command(char *path, char **argv, char **envp)
+void	exec_path_command(char *path, char **argv, char **env)
 {
 	if (access(path, F_OK) != 0)
 	{
@@ -285,9 +264,9 @@ void	exec_path_command(char *path, char **argv, char **envp)
 		print_exec_error(path, 126);
 		exit(126);
 	}
-	execve(path, argv, envp);
+	execve(path, argv, env);
 	if (errno == ENOEXEC)
-		exec_script_with_bash(path, argv, envp);
+		exec_script_with_bash(path, argv, env);
 	perror("bash");
 	exit(126);
 }
@@ -316,7 +295,7 @@ void	exec_cmd(char **cmd, t_env *env, t_minishell *mini)
 	tmp_path = make_path(env);
 	if (!tmp_path)
 	{
-		check_cwd(cmd, env_array);
+		exec_path_command(cmd[0], cmd, env_array);
 		return (printf("Error: PATH not found in environment\n"), exit(127));
 	}
 	path = ft_split_2(tmp_path, ':');
