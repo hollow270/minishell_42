@@ -6,7 +6,7 @@
 /*   By: yhajbi <yhajbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:16:24 by yhajbi            #+#    #+#             */
-/*   Updated: 2025/06/20 16:10:07 by yhajbi           ###   ########.fr       */
+/*   Updated: 2025/06/21 22:39:18 by yhajbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,19 @@ static t_minishell	*init_minishell(char **env, t_status *e_status)
 static t_env *get_pwd()
 {
 	t_env	*ret;
+	
 
 	ret = malloc(sizeof(t_env));
 	if (!ret)
 		return (NULL);
 	ret->name = ft_strdup("PWD");
 	ret->value = getcwd(NULL, 0);
-	ret->next = NULL;
+	ret->next = malloc(sizeof(t_env));
+	if (!ret->next)
+		return (NULL);
+	ret->next->name = ft_strdup("PATH");
+	ret->next->value = ft_strdup("/home/yhajbi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin");
+	ret->next->next = NULL;
 	return (ret);
 }
 
@@ -127,6 +133,7 @@ static t_status	minishell(t_minishell **s_minishell)
 		free(s_ms->cmdline);
 		close(s_ms->stdfd[0]);
 		close(s_ms->stdfd[1]);
+		//ft_exit(s_ms->s_cmd->argv, s_ms);
 		return (STATUS_EXIT_CMD);
 	}
 	add_history(s_ms->cmdline);
